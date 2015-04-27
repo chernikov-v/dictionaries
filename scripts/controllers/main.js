@@ -1,5 +1,5 @@
 'use strict';
 
-angularApp.controller('MainCtrl', function ($scope) {
+angularApp.controller('MainCtrl', function ($scope, $location) {
 
 });

@@ -126,14 +126,16 @@ angularApp.controller('CreateCtrl', function ($scope, $dialog, FormService, file
 
 
     $scope.loadFile = function(){
+      fileDialog.openFile(function(filename){
 
+      },false,'json');
       //alert('File Load Dialog');
     };
 
-    $scope.saveFile = function(file){
-      fileDialog.saveFile(function(file){
+    $scope.saveFile = function(){
+      fileDialog.saveAs(function(filename){
 
-      },  );
+      }, false, 'json');
       //alert('File Save Dialog');
 
     };

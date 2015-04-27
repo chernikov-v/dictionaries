@@ -9,6 +9,8 @@
     <!-- build:css({.tmp,app}) styles/main.css -->
 	<link rel="stylesheet" href="styles/main.css">
 	<link rel="stylesheet" href="styles/bootstrap-2.3.2.min.css">
+	<link rel="stylesheet" href="styles/custom.css">
+
 	<!-- endbuild -->
 
   </head>
@@ -16,6 +18,7 @@
         <div class="container-narrow">
             <div class="masthead" ng-controller="HeaderCtrl" >
                 <ul class="nav nav-pills pull-right">
+                    <li ng-class="{active: ($location.path() == '/user') }"><a href="#/user">User</a></li>
                     <li ng-class="{active: ($location.path() == '/') }"><a href="#/">Home</a></li>
                     <li ng-class="{active: ($location.path() == '/forms/create') }"><a href="#/forms/create">Create a Form</a></li>
                     <li ng-class="{active: ($location.path() == '/forms/1/view') }"><a href="#/forms/1/view">View Example Form</a></li>
@@ -46,6 +49,7 @@
         <script src="bower_components/angular-cookies/angular-cookies.js"></script>
         <script src="bower_components/angular-ui/build/angular-ui.js"></script>
         <script src="bower_components/angular-strap/dist/angular-strap.min.js"></script>
+        <script src="bower_components/angular-strap/dist/angular-strap.tpl.min.js"></script>
         <script src="lib/nw-fileDialog.js"></script>
 
         <!--<script src="lib/angular-strap.min.js"></script>-->
@@ -56,6 +60,7 @@
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/create.js"></script>
         <script src="scripts/controllers/view.js"></script>
+        <script src="scripts/controllers/view_user.js"></script>
         <script src="scripts/controllers/header.js"></script>
         <script src="scripts/services/form-service.js"></script>
         <script src="scripts/directives/form-directive.js"></script>

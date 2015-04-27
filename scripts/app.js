@@ -3,7 +3,14 @@
 var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap', 'mgcrea.ngStrap', 'ngRoute', 'DWand.nw-fileDialog'])
 //var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap', '$strap.directives','ngRoute'])
 
-.config(function ($routeProvider) {
+.config(function ($routeProvider, $datepickerProvider) {
+
+    angular.extend($datepickerProvider.defaults, {
+      dateFormat: 'dd/MM/yyyy',
+      startWeek: 1,
+
+    });
+
 
     $routeProvider
         .when('/', {
@@ -17,6 +24,10 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap', 'mgc
         .when('/forms/:id/view', {
             templateUrl: 'views/view.html',
             controller: 'ViewCtrl'
+        })
+        .when('/user', {
+        templateUrl: 'views/user.html',
+        controller: 'ViewUserCtrl'
         })
         .otherwise({
             redirectTo: '/'
