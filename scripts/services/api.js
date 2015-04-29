@@ -137,6 +137,7 @@ angularApp.factory('Api', function ($resource, $http, $q) {
     api.get(function (response) {
       console.log('data - ', response);
       _data.form_fields = response.form_fields;
+      _data.data_id = response.data_id;
       _data.form_id = response.form_id;
       _data.form_name = response.form_name;
 
@@ -197,6 +198,22 @@ angularApp.factory('Api', function ($resource, $http, $q) {
     api.save(angular.toJson(_data));
   };
 
+  var httpSend = function(){
+
+    $http({
+      method: 'POST',
+      url: apiUrl,
+      headers: {
+        'Content-Type': 'application/json'
+        //'Content-Type': undefined
+      }
+
+
+    })
+  };
+
+
+
   var jqAjax = function(_data, id) {
     $.ajax({
       type: "POST",
@@ -214,8 +231,8 @@ angularApp.factory('Api', function ($resource, $http, $q) {
       apiUrl,
       { data: angular.toJson(_data) },
       function (success) {
-      },
-      'json'
+      }/*,
+      'json'*/
     );
   };
 
