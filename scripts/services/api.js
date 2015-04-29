@@ -136,10 +136,14 @@ angularApp.factory('Api', function ($resource, $http, $q) {
 
     api.get(function (response) {
       console.log('data - ', response);
-      _data.form_fields = response.form_fields;
-      _data.data_id = response.data_id;
-      _data.form_id = response.form_id;
-      _data.form_name = response.form_name;
+      if(typeof response.data_id == 'undefined'){
+        alert('No data received! Incorrect ID!')
+      }else{
+        _data.form_fields = response.form_fields;
+        _data.data_id = response.data_id;
+        _data.form_id = response.form_id;
+        _data.form_name = response.form_name;
+      }
 
       console.log('_data - ', _data);
     }, function (error) {
@@ -231,6 +235,7 @@ angularApp.factory('Api', function ($resource, $http, $q) {
       apiUrl,
       { data: angular.toJson(_data) },
       function (success) {
+
       }/*,
       'json'*/
     );

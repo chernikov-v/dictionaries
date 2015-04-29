@@ -24,7 +24,7 @@ angularApp.directive('formDirective', function () {
       $scope.submit = function(){
         alert('Form submitted..');
         console.log('form - ', angular.fromJson(angular.toJson($scope.form)));
-        //$scope.form.submitted = true;
+        $scope.form.submitted = true;
         /*********************************************************************/
         Api.send($scope.form);
       };

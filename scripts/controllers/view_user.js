@@ -14,12 +14,14 @@ var ViewCtrl = angularApp.controller('ViewUserCtrl', function ($scope, FormServi
       console.log('$scope.form - ', $scope.form);
     }, 5000);
     console.log('$scope.form - ', $scope.form);
+    $scope.form.submitted = false;
   };
 
   $scope.editUser = function(){
     var id = prompt('Enter Existing User ID: ');
     console.log('ID - ', id);
     Api.get($scope.form,id);
+    $scope.form.submitted = false;
 
   };
 

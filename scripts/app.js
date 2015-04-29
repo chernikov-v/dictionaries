@@ -3,15 +3,7 @@
 var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap','ngResource', 'mgcrea.ngStrap', 'ngRoute', 'DWand.nw-fileDialog'])
 //var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap', '$strap.directives','ngRoute'])
 
-.config(function ($routeProvider, $datepickerProvider, $httpProvider,$sceDelegateProvider) {
-
-    $sceDelegateProvider.resourceUrlWhitelist([
-      'http://dev.local/**',
-      'http://54.93.177.90/**'
-    ]);
-
-
-
+.config(function ($routeProvider, $datepickerProvider, $httpProvider) {
 
 /*
 
