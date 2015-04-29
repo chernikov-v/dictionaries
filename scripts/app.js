@@ -3,10 +3,23 @@
 var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap','ngResource', 'mgcrea.ngStrap', 'ngRoute', 'DWand.nw-fileDialog'])
 //var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap', '$strap.directives','ngRoute'])
 
-.config(function ($routeProvider, $datepickerProvider, $httpProvider) {
-  /*$httpProvider.defaults.useXDomain = true;
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];*/
-    //$httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+.config(function ($routeProvider, $datepickerProvider, $httpProvider,$sceDelegateProvider) {
+
+    $sceDelegateProvider.resourceUrlWhitelist([
+      'http://dev.local/**',
+      'http://54.93.177.90/**'
+    ]);
+
+
+
+
+/*
+
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+*/
+
+    $httpProvider.defaults.headers.post["Content-Type"] = "application/json";
   /*  $httpProvider.defaults.transformRequest.unshift(function (data, headersGetter) {
      *//* var key, result = [];
       for (key in data) {
