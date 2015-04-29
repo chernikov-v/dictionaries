@@ -22,7 +22,7 @@ angularApp.directive('formDirective', function () {
   return {
     controller: function($scope, $resource,$http, $q){
       $scope.submit = function(){
-        alert('Form submitted..');
+        //alert('Form submitted..');
         console.log('form - ', angular.fromJson(angular.toJson($scope.form)));
         $scope.form.submitted = true;
         /*********************************************************************/
