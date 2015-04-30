@@ -3,7 +3,8 @@
     <a class="btn btn-large btn-success" ng-click="editUser()">Edit User</a>
 </div>
 
-
+<hr>
+<div kendo-grid k-data-source="userDataSource" k-options="gridOptions" k-columns="usersColumns" ></div><!--k-columns="userColumns"-->
 <hr>
 
 <form-directive-user form="form"></form-directive-user><hr>
