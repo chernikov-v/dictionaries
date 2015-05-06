@@ -10,9 +10,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout) {
     },
     link: function ($scope, $element, $attrs, $controller) {
 
-
-
-
       //$http.get('server_columns.json').success(function(response){
       //$http.get('v.json').success(function(response){
       $http.get('http://mvc.gloria-jeans-portal.com/api/forms?schema&columns').success(function (response) {
@@ -43,6 +40,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout) {
           },
           height: 500,
           pageable: true,
+          resizable: true,
           columns: $scope.columns,
           reorderable: true,
           columnReorder: function (e) {
@@ -55,7 +53,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout) {
 
       });
 
-
       var editColumn = {
         command: [{
           name: "Edit User",
@@ -65,7 +62,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout) {
             console.log("User Id: ", data.id);
             $scope.onEdit(data.id);
           }
-
         }]
       };
 
