@@ -18,15 +18,18 @@ angularApp.directive('formDirective', function () {
             form:'='
         }
     };
-  }).directive('formDirectiveUser', function (Api) {
+  }).directive('formDirectiveUser', function (Api, $rootScope, $location) {
   return {
-    controller: function($scope, $resource,$http, $q){
+    controller: function($scope){
       $scope.submit = function(){
-        //alert('Form submitted..');
-        console.log('form - ', angular.fromJson(angular.toJson($scope.form)));
-        $scope.form.submitted = true;
-        /*********************************************************************/
-        Api.send($scope.form);
+
+        console.log(Api.send($scope.form).done(function(success){
+          $rootScope.hideForm = true;
+          console.log("success", $rootScope.hideForm);
+
+
+        }));
+        $location.path('/grid').search({});
       };
 
       $scope.cancel = function(){

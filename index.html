@@ -33,12 +33,13 @@
         <div class="container-narrow">
             <div class="masthead" ng-controller="HeaderCtrl" >
                 <ul class="nav nav-pills pull-right">
+                    <li ng-class="{active: ($location.path() == '/grid') }"><a href="#/grid">Grid</a></li>
                     <li ng-class="{active: ($location.path() == '/user') }"><a href="#/user">User</a></li>
-                    <li ng-class="{active: ($location.path() == '/') }"><a href="#/">Home</a></li>
+                  <!--  <li ng-class="{active: ($location.path() == '/') }"><a href="#/">Home</a></li>
                     <li ng-class="{active: ($location.path() == '/forms/create') }"><a href="#/forms/create">Create a Form</a></li>
-                    <li ng-class="{active: ($location.path() == '/forms/1/view') }"><a href="#/forms/1/view">View Example Form</a></li>
+                    <li ng-class="{active: ($location.path() == '/forms/1/view') }"><a href="#/forms/1/view">View Example Form</a></li>-->
                 </ul>
-                <h3 class="muted">angularjs-form-builder</h3>
+                <h3 class="muted">Form Builder</h3>
             </div>
 
             <hr>
@@ -78,11 +79,13 @@
         <script src="scripts/controllers/create.js"></script>
         <script src="scripts/controllers/view.js"></script>
         <script src="scripts/controllers/view_user.js"></script>
+        <script src="scripts/controllers/view_grid.js"></script>
         <script src="scripts/controllers/header.js"></script>
         <script src="scripts/services/api.js"></script>
         <script src="scripts/services/form-service.js"></script>
         <script src="scripts/directives/form-directive.js"></script>
         <script src="scripts/directives/field-directive.js"></script>
+        <script src="scripts/directives/grid-directive.js"></script>
         <script src="lib/ui-bootstrap-tpls-0.4.0.min.js"></script>
         <!-- endbuild -->
   </body>

@@ -1,0 +1,31 @@
+[
+	{
+		"title": "ID",
+		"template": "#=id#"
+		
+	},
+	{
+		"title": "Name",
+		"template": "#=firstName# #=lastName# "
+	},
+	{
+		"title": "Email",
+		"template": "#=emailAddress#"
+	},
+	{
+		"title": "Birth Date",
+		"template": "#=birthDate#"
+	},
+	{
+		"title": "Gender",
+		"template": "#=gender#"
+	},
+	{
+		"title": "Browser",
+		"template": "#=yourBrowser#"
+	},
+	{
+		"title": "Comments",
+		"template": "#=additionalComments#"
+	}
+]

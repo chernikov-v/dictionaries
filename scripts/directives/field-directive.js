@@ -28,16 +28,18 @@ angularApp.directive('fieldDirective', function($http, $compile) {
         if (__indexOf.call(supported_fields, type) >= 0) {
             return templateUrl += type + '.html';
         }
-    }
+    };
 
     var linker = function(scope, element) {
-      element.hide();
+        element.hide();
         // GET template content from path
         var templateUrl = getTemplateUrl(scope.field);
+      if(scope.field.field_type == 'date'){
+        scope.field.field_value = new Date(scope.field.field_value);
+      }
+      console.log(scope.field);
         $http.get(templateUrl).success(function(data) {
-
             element.html(data);
-
             $compile(element.contents())(scope);
             element.show();
         });

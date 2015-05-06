@@ -12,7 +12,7 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
 
 
     $routeProvider
-        .when('/', {
+        .when('/main', {
             templateUrl: 'views/main.html',
             controller: 'MainCtrl'
         })
@@ -28,8 +28,12 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
         templateUrl: 'views/user.html',
         controller: 'ViewUserCtrl'
         })
+        .when('/grid', {
+        templateUrl: 'views/grid.html',
+        controller: 'ViewGridCtrl'
+        })
         .otherwise({
-            redirectTo: '/'
+            redirectTo: '/grid'
         });
 
 }).run(['$rootScope',  function() {}]);

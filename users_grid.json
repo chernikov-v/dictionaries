@@ -1,5 +1,5 @@
-{
-    "data": [
+
+[
         {
             "user_id": "9812d039-11c1-58f2-bccb-4deeca940dc4",
             "first_name": "John",
@@ -109,59 +109,4 @@
             "add_comments": "No comments!",
             "collection": {}
         }
-    ],
-    "schema": {
-    "user_id": {
-     "type": "id"
-     },
-     "first_name": {
-     "type": "string"
-     },
-     "last_name": {
-     "type": "string"
-     },
-     "gender": {
-     "type": "string"
-     },
-     "birth_date": {
-     "type": "string"
-     },
-     "user_browser": {
-     "type": "string"
-     },
-     "add_comments": {
-     "type": "string"
-     }
-    },
-    "columns": [
-        {
-            "title": "User ID",
-            "field": "user_id"
-        },
-        {
-            "title": "Name",
-            "template": "#=first_name# #=last_name#"
-        },
-        {
-            "title": "Gender",
-            "field": "gender"
-        },
-        {
-            "title": "Birth Date",
-            "field": "birth_date"
-        },
-        {
-            "title": "Browser",
-            "field": "user_browser"
-        },
-        {
-            "title": "Comments",
-            "field": "add_comments"
-        },
-        {
-            "title": "Collection",
-            "field": "collection",
-            "template": "#= typeof collection.value1 != 'undefined' ? collection.value1:'' #"
-        }
-    ]
-}
+]
