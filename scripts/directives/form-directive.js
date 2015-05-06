@@ -23,10 +23,9 @@ angularApp.directive('formDirective', function () {
     controller: function($scope){
       $scope.submit = function(){
 
-        console.log(Api.send($scope.form).done(function(success){
+        console.log(Api.send($scope.form).then(function(success){
           $rootScope.hideForm = true;
           console.log("success", $rootScope.hideForm);
-
 
         }));
         $location.path('/grid').search({});
