@@ -20,27 +20,8 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
       $http.get('http://mvc.gloria-jeans-portal.com/api/forms/columns').success(function (columns) {
         $http.get('http://mvc.gloria-jeans-portal.com/api/forms/schema').success(function (schema) {
           console.log(columns, schema);
-          $scope.columns = columns.columns;
-         /* $scope.schema = angular.fromJson({
-            "schema": {
-              "model": {
-                "fields": {
-                  //"id": {"type": "string"},
-                  "_id": {"type": "string"},
-                  "formId": {"type": "string"},
-                  "firstName": {"type": "string"},
-                  "lastName": {"type": "string"},
-                  "gender": {"type": "boolean"},
-                  "emailAddress": {"type": "email"},
-                  "password": {"type": "string"},
-                  "birthDate": {"type": "date"},
-                  "yourBrowser": {"type": "number"},
-                  "additionalComments": {"type": "string"}
-                }
-              }
-            }
-          }).schema;*/
 
+          $scope.columns = columns.columns;
           $scope.schema = schema.schema;
 
 
@@ -68,7 +49,9 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
 
 
           $scope.gridOptions = {
+
             dataSource: new kendo.data.DataSource({
+              offlineStorage: "offline-kendo",
               transport: gridTransport,
               schema: $scope.schema,
               pageSize: 7 //elements per/page
@@ -125,11 +108,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             toolbar: ["create", "save", "cancel", "excel", "pdf"]
           };
 
-
-          function detailInit(e) {
-            $("<div/>").appendTo(e.detailCell).kendoGrid($scope.gridOptions)
-          }
-
           ($scope.createGrid = function () {
             var grid = $("#myGrid");
 
@@ -142,11 +120,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions);
             console.log($scope.grid);
           })();
-
-
-          //var lastCell = $scope.grid.tbody.find("tr:last td:last");
-          //$scope.grid.current(lastCell);
-          //$scope.grid.table.focus();
 
         });
       });
@@ -206,7 +179,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         }
       };
       var gridTransport = {
-        create: function (options) {
+       create: function (options) {
             $.ajax({
               method: 'POST',
               //url: Api.urls.post,
@@ -286,6 +259,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
 
       };
       var editColumn = {
+        title: "Actions",
         command: [
           {
             name: "edit_user",

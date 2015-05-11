@@ -38,6 +38,9 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
       .when('/aggregates', {
         template: '<aggregates-grid></aggregates-grid>'
       })
+      .when('/frozen', {
+        template: '<frozen-grid></frozen-grid>'
+      })
         .otherwise({
             redirectTo: '/grid'
         });
