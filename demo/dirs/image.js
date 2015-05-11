@@ -13,6 +13,7 @@ angularApp.directive('imageGrid', function ($http) {
           schema: {
             model: {
               fields: {
+                ava: {type: "string"},
                 Name: {type: "string"},
                 Author: {type: "string"},
                 Qty: {type: "number"},
@@ -33,7 +34,7 @@ angularApp.directive('imageGrid', function ($http) {
           height: 500,
           pageable: true,
           columns: [
-            {title: 'Image', template: '<div><img src="#:ava#"></div>'},
+            {title: 'Image', field: "ava", template: '<div class="photo"><img src="#:ava#"></div>'},
             {field: 'Name', title: 'Name', filterable: true},
             'Author',
             {field: 'Qty', filterable: true},
