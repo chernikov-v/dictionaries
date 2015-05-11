@@ -33,9 +33,11 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
         controller: 'ViewGridCtrl'
         })
         .when('/hierarchy', {
-          templateUrl: 'demo/hierarchy.html',
-          controller: 'demoController'
+          template: '<hierarchy-grid></hierarchy-grid>'
         })
+      .when('/aggregates', {
+        template: '<aggregates-grid></aggregates-grid>'
+      })
         .otherwise({
             redirectTo: '/grid'
         });

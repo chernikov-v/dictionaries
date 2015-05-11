@@ -1,5 +1,4 @@
-
-angularApp.directive('demoGrid', function ($http) {
+angularApp.directive('aggregatesGrid', function ($http) {
 
   return {
     restrict: 'E',
@@ -11,6 +10,19 @@ angularApp.directive('demoGrid', function ($http) {
 
         $scope.data = new kendo.data.DataSource({
           data: $scope.dataArray,
+          group: {
+            field: "Qty", aggregates: [
+              { field: "Qty", aggregate: "sum" },
+              { field: "Qty", aggregate: "count" },
+            ]
+          },
+          aggregate: [
+            {field: "Name", aggregate: "count"},
+            {field: "Qty", aggregate: "sum"},
+            {field: "Qty", aggregate: "average"},
+            {field: "Qty", aggregate: "min"},
+            {field: "Qty", aggregate: "max"}
+          ],
           schema: {
             model: {
               fields: {
@@ -23,36 +35,31 @@ angularApp.directive('demoGrid', function ($http) {
           },
           pageSize: 8
         });
-        function detailInit(e) {
-          $("<div/>").appendTo(e.detailCell).kendoGrid({
-            dataSource: $scope.data,
-            scrollable: false,
-            sortable: true,
-            pageable: true,
-            columns: [
-              {field: 'Name', title: 'Name', filterable: true},
-              'Author',
-              {field: 'Qty', filterable: true},
-              {field: 'Date', title: 'Date', format: "{0:MM/dd/yyyy}"},
-              {title: "Destroy", command: "destroy"}
-            ]
-          });
-        }
+
 
         $scope.gridOptions = {
 
           dataSource: $scope.data,
           editable: "incell",
-          height: 300,
-          detailInit: detailInit,
+          sortable: true,
+
+          height: 500,
           pageable: true,
           columns: [
-            {field: 'Name', title: 'Name', filterable: true},
+            {
+              field: 'Name', title: 'Name', filterable: true,
+              aggregates: ["count"],
+              footerTemplate: "Total Count: #=count#"/*, groupFooterTemplate: "Count: #=count#"*/
+            },
             'Author',
-            {field: 'Qty', filterable: true},
+            {field: 'Qty', filterable: true,
+              groupFooterTemplate: "Sum: #=sum#",
+              groupHeaderTemplate: "Units In Stock: #= value # (Count: #= count#)",
+              footerTemplate: "Sum: #=sum# </br> Average: #=average# </br> Min: #=min# </br> Max: #=max#"},
             {field: 'Date', title: 'Date', format: "{0:MM/dd/yyyy}"},
             {title: "Destroy", command: "destroy"}
-          ]
+          ],
+          toolbar: ["create", "save"]
         };
 
 

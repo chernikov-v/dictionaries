@@ -1,12 +1,12 @@
 [
+  {"Name": "book1", "Author": "Author4", "Qty": 1, "Date" : "12/12/2012"},
+  {"Name": "book1", "Author": "Author4", "Qty": 2, "Date" : "12/12/2012"},
   {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
   {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
+  {"Name": "book1", "Author": "Author4", "Qty": 8, "Date" : "12/12/2012"},
   {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
-  {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
-  {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
-  {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
-  {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
-  {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
-  {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"},
+  {"Name": "book1", "Author": "Author4", "Qty": 5, "Date" : "12/12/2012"},
+  {"Name": "book1", "Author": "Author4", "Qty": 2, "Date" : "12/12/2012"},
+  {"Name": "book1", "Author": "Author4", "Qty": 1, "Date" : "12/12/2012"},
   {"Name": "book1", "Author": "Author4", "Qty": 3, "Date" : "12/12/2012"}
 ]
