@@ -11,121 +11,151 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
     link: function ($scope, $element, $attrs, $controller) {
 
 
-      $http.get('server_columns.json').success(function (response) {
-        //$http.get('v.json').success(function(response){
-        //$http.get('http://mvc.gloria-jeans-portal.com/api/forms?schema&columns').success(function (response) {
-        //$http.get(Api.urls.gridSchema).success(function (response) {
+      //$http.get('server_columns.json').success(function (response) {
+      //$scope.columns = response.shcema;
+      //$scope.schema = response.schema;
+      //console.log(response);
 
 
-        $scope.columns = response.shcema;
-        $scope.schema = response.schema;
-
-        $scope.columns[1].filterable = {
-          ui: gridFilters.lastNameFilter
-        };
-        //console.log(angular.toJson($scope.columns));
-
-        /*===================remove template field======================*/
-        /*for (var i = 0; i < $scope.columns.length; i++) {
-         if (typeof $scope.columns[i].template != 'undefined') {
-         delete $scope.columns[i].template
-         }
-         }*/
-
-        //console.log('columns cshema - ', $scope.columns);
-
-        /*add edit column*/
-        $scope.columns.push(editColumn);
-
-
-        $scope.gridOptions = {
-          dataSource: new kendo.data.DataSource({
-            transport: gridTransport,
-            schema: $scope.schema,
-            pageSize: 7 //elements per/page
-          }),
-          height: 400,
-          //detailInit: detailInit,
-          /*===============================================================================================================*/
-          filterable: {
-            extra: false,//disable 2-nd filter input
-            operators: {
-              string: {
-                startswith: "Starts with",
-                eq: "Is equal to",
-                neq: "Is not equal to"
+      $http.get('http://mvc.gloria-jeans-portal.com/api/forms/columns').success(function (columns) {
+        $http.get('http://mvc.gloria-jeans-portal.com/api/forms/schema').success(function (schema) {
+          console.log(columns, schema);
+          $scope.columns = columns.columns;
+         /* $scope.schema = angular.fromJson({
+            "schema": {
+              "model": {
+                "fields": {
+                  //"id": {"type": "string"},
+                  "_id": {"type": "string"},
+                  "formId": {"type": "string"},
+                  "firstName": {"type": "string"},
+                  "lastName": {"type": "string"},
+                  "gender": {"type": "boolean"},
+                  "emailAddress": {"type": "email"},
+                  "password": {"type": "string"},
+                  "birthDate": {"type": "date"},
+                  "yourBrowser": {"type": "number"},
+                  "additionalComments": {"type": "string"}
+                }
               }
             }
-          },
-          /*===============================================================================================================*/
-          sortable: true,
-          /*==========================================+====================================================================*/
-          allowCopy: true,  //or true to allow user copy to clipboard !// uses with selectable option
-          selectable: "multiple cell", //"row" "cell" "multiple row" "multiple cell"
-          /*===============================================================================================================*/
-          //altRowTemplate: gridTmpCustomize.altRowTemplate($scope.columns), //customize row template
-          /*===============================================================================================================*/
-          //autoBind: true,
-          /*===============================================================================================================*/
-          pageable: true, //default paging function
-          /*===============================================================================================================*/
-          groupable: true, //default group panel
-          /*===============================================================================================================*/
-          //scrollable: { virtual : true }, //allows automatic go next page
-          /*===============================================================================================================*/
-          columnResizeHandleWidth: 5, //width in px of resize handler
-          /*===============================================================================================================*/
-          /*edit line with popup menu*/
-          //editable: "popup", //best to use with row button
-          editable: "inline", //best to use with row button
-          /*===============================================================================================================*/
-          //editable: true,
-          //navigatable: true,
-          resizable: true,
-          columns: $scope.columns,
-          /*column reorder and event*/
-          reorderable: true,
-          columnReorder: gridEvents.columnReorder,
+          }).schema;*/
 
-          change: gridEvents.change,
-          save: gridEvents.save,
-          remove: gridEvents.remove,
-          cancel: gridEvents.cancel,
-          edit: gridEvents.edit,
-          autoSync: true,
-          toolbar: ["create", "save", "cancel", "excel", "pdf"]
-        };
+          $scope.schema = schema.schema;
 
 
-        function detailInit(e) {
-          $("<div/>").appendTo(e.detailCell).kendoGrid($scope.gridOptions)
-        }
+          //$http.get('v.json').success(function(response){
+          //$http.get('http://mvc.gloria-jeans-portal.com/api/forms?schema&columns').success(function (response) {
+          //$http.get(Api.urls.gridSchema).success(function (response) {
 
-        ($scope.createGrid = function () {
-          var grid = $("#myGrid");
 
-          if (grid.data("kendoGrid")) {
-            grid.data("kendoGrid").destroy();
-            grid.empty();
-          } else {
-            $element.html("<div id='myGrid'></div>");
+          $scope.columns[1].filterable = {
+            ui: gridFilters.lastNameFilter
+          };
+
+
+          /*===================remove template field======================*/
+          /*for (var i = 0; i < $scope.columns.length; i++) {
+           if (typeof $scope.columns[i].template != 'undefined') {
+           delete $scope.columns[i].template
+           }
+           }*/
+
+          //console.log('columns cshema - ', $scope.columns);
+
+          /*add edit column*/
+          $scope.columns.push(editColumn);
+
+
+          $scope.gridOptions = {
+            dataSource: new kendo.data.DataSource({
+              transport: gridTransport,
+              schema: $scope.schema,
+              pageSize: 7 //elements per/page
+            }),
+            height: 400,
+            //detailInit: detailInit,
+            /*===============================================================================================================*/
+            filterable: {
+              extra: false,//disable 2-nd filter input
+              operators: {
+                string: {
+                  startswith: "Starts with",
+                  eq: "Is equal to",
+                  neq: "Is not equal to"
+                }
+              }
+            },
+            /*===============================================================================================================*/
+            sortable: true,
+            /*==========================================+====================================================================*/
+            allowCopy: true,  //or true to allow user copy to clipboard !// uses with selectable option
+            selectable: "multiple cell", //"row" "cell" "multiple row" "multiple cell"
+            /*===============================================================================================================*/
+            //altRowTemplate: gridTmpCustomize.altRowTemplate($scope.columns), //customize row template
+            /*===============================================================================================================*/
+            //autoBind: true,
+            /*===============================================================================================================*/
+            pageable: true, //default paging function
+            /*===============================================================================================================*/
+            groupable: true, //default group panel
+            /*===============================================================================================================*/
+            //scrollable: { virtual : true }, //allows automatic go next page
+            /*===============================================================================================================*/
+            columnResizeHandleWidth: 5, //width in px of resize handler
+            /*===============================================================================================================*/
+            /*edit line with popup menu*/
+            //editable: "popup", //best to use with row button
+            editable: "inline", //best to use with row button
+            /*===============================================================================================================*/
+            //editable: true,
+            //navigatable: true,
+            resizable: true,
+            columns: $scope.columns,
+            /*column reorder and event*/
+            reorderable: true,
+            columnReorder: gridEvents.columnReorder,
+
+            change: gridEvents.change,
+            save: gridEvents.save,
+            remove: gridEvents.remove,
+            cancel: gridEvents.cancel,
+            edit: gridEvents.edit,
+            autoSync: true,
+            toolbar: ["create", "save", "cancel", "excel", "pdf"]
+          };
+
+
+          function detailInit(e) {
+            $("<div/>").appendTo(e.detailCell).kendoGrid($scope.gridOptions)
           }
-          $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions);
-          console.log($scope.grid);
-        })();
+
+          ($scope.createGrid = function () {
+            var grid = $("#myGrid");
+
+            if (grid.data("kendoGrid")) {
+              grid.data("kendoGrid").destroy();
+              grid.empty();
+            } else {
+              $element.html("<div id='myGrid'></div>");
+            }
+            $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions);
+            console.log($scope.grid);
+          })();
 
 
-        //var lastCell = $scope.grid.tbody.find("tr:last td:last");
-        //$scope.grid.current(lastCell);
-        //$scope.grid.table.focus();
+          //var lastCell = $scope.grid.tbody.find("tr:last td:last");
+          //$scope.grid.current(lastCell);
+          //$scope.grid.table.focus();
 
+        });
       });
 
       /*===============================================================================================================*/
       /*===============================================================================================================*/
 
       var gridFilters = {
-        lastNameFilter: function (element,asd,zxc) {
+        lastNameFilter: function (element, asd, zxc) {
           console.log('element', element);
           element.kendoDropDownList({
             dataSource: ["custom", "list", "Doe", "Guy", "Кирпич"],
@@ -177,18 +207,17 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
       };
       var gridTransport = {
         create: function (options) {
-          $timeout(function () {
             $.ajax({
               method: 'POST',
-              url: Api.urls.post,
+              //url: Api.urls.post,
+              url: 'http://mvc.gloria-jeans-portal.com/api/forms/editadd',
               data: {
-                models: kendo.stringify(options.data)
+                data: kendo.stringify(options.data)
               },
               success: function (result) {
                 options.success(result);
               }
             })
-          }, 2000);
         },
         read: function (options) {
           $timeout(function () {
@@ -198,16 +227,21 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
                 models: kendo.stringify(options.data)
               },
               success: function (result) {
-                //console.log(angular.toJson(result));
+                console.log(result);
                 options.success(result);
               }
             })
           }, 2000);
         },
         update: function (options) {
+          console.log(options.data._id);
+         /* var url = options.data._id == ""?
+            'http://mvc.gloria-jeans-portal.com/api/forms/editadd':
+            'http://mvc.gloria-jeans-portal.com/api/forms/edit';*/
           $.ajax({
             method: 'POST',
-            url: Api.urls.post,
+            //url: Api.urls.post,
+            url: 'http://mvc.gloria-jeans-portal.com/api/forms/editadd',
             data: {
               data: kendo.stringify(options.data)
             },
