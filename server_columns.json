@@ -1,31 +1,38 @@
-[
-	{
-		"title": "ID",
-		"template": "#=id#"
-		
-	},
-	{
-		"title": "Name",
-		"template": "#=firstName# #=lastName# "
-	},
-	{
-		"title": "Email",
-		"template": "#=emailAddress#"
-	},
-	{
-		"title": "Birth Date",
-		"template": "#=birthDate#"
-	},
-	{
-		"title": "Gender",
-		"template": "#=gender#"
-	},
-	{
-		"title": "Browser",
-		"template": "#=yourBrowser#"
-	},
-	{
-		"title": "Comments",
-		"template": "#=additionalComments#"
+{
+	"shcema": [
+	    {
+	        "title": "First Name",
+	        "field": "firstName",
+			"template": "#=firstName#",
+	        "filterable": { "multi": true }
+	    },
+	    {
+	        "title": "Last Name",
+	        "field": "lastName",
+	        "template": "#=lastName#"
+	        
+	    },
+	    {
+	        "title": "Email Address",
+	        "field": "emailAddress",
+	        "template": "#=emailAddress#",
+	        "filterable" : false
+	    },
+	    {
+	        "title": "Birth Date",
+	        "field": "birthDate",
+	        "template": "#=birthDate#",
+	        "format": "{0:MM/dd/yyyy}"
+	    }
+	],
+	"schema": {
+		"model" : {
+			"fields":{
+				"firstName" : { "type":"string"},
+				"lastName"  : { "type":"string" },
+				"emailAddress" : { "type":"email" },
+				"birthDate"  : { "type":"date" }
+			}
+		}
 	}
-]
+}

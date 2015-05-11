@@ -1,7 +1,7 @@
 'use strict';
 
 
-angularApp.directive('usersGrid', function ($http, $location, $timeout) {
+angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
 
   return {
     restrict: 'E',
@@ -10,60 +10,306 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout) {
     },
     link: function ($scope, $element, $attrs, $controller) {
 
-      //$http.get('server_columns.json').success(function(response){
-      //$http.get('v.json').success(function(response){
-      $http.get('http://mvc.gloria-jeans-portal.com/api/forms?schema&columns').success(function (response) {
-        console.log('columns cshema - ', response);
+
+      $http.get('server_columns.json').success(function (response) {
+        //$http.get('v.json').success(function(response){
+        //$http.get('http://mvc.gloria-jeans-portal.com/api/forms?schema&columns').success(function (response) {
+        //$http.get(Api.urls.gridSchema).success(function (response) {
+
+
         $scope.columns = response.shcema;
+        $scope.schema = response.schema;
+
+        $scope.columns[1].filterable = {
+          ui: gridFilters.lastNameFilter
+        };
+        //console.log(angular.toJson($scope.columns));
+
+        /*===================remove template field======================*/
+        /*for (var i = 0; i < $scope.columns.length; i++) {
+         if (typeof $scope.columns[i].template != 'undefined') {
+         delete $scope.columns[i].template
+         }
+         }*/
+
+        //console.log('columns cshema - ', $scope.columns);
+
+        /*add edit column*/
         $scope.columns.push(editColumn);
 
-        $scope.gridOptions = {
-          dataSource: {
-            transport: {
-              //read: 'http://mvc.gloria-jeans-portal.com/api/forms?data'
-              //read: "users_grid.json"
-              read: function (options) {
-                $timeout(function () {
-                  $.ajax({ url: "http://mvc.gloria-jeans-portal.com/api/forms?data",
-                    data: {
-                      models: kendo.stringify(options.data)
-                    },
-                    success: function (result) {
-                      options.success(result);
-                    }
-                  })
-                }, 2000);
-              }
 
-            },
-            pageSize: 5
+        $scope.gridOptions = {
+          dataSource: new kendo.data.DataSource({
+            transport: gridTransport,
+            schema: $scope.schema,
+            pageSize: 7 //elements per/page
+          }),
+          height: 400,
+          //detailInit: detailInit,
+          /*===============================================================================================================*/
+          filterable: {
+            extra: false,//disable 2-nd filter input
+            operators: {
+              string: {
+                startswith: "Starts with",
+                eq: "Is equal to",
+                neq: "Is not equal to"
+              }
+            }
           },
-          height: 500,
-          pageable: true,
+          /*===============================================================================================================*/
+          sortable: true,
+          /*==========================================+====================================================================*/
+          allowCopy: true,  //or true to allow user copy to clipboard !// uses with selectable option
+          selectable: "multiple cell", //"row" "cell" "multiple row" "multiple cell"
+          /*===============================================================================================================*/
+          //altRowTemplate: gridTmpCustomize.altRowTemplate($scope.columns), //customize row template
+          /*===============================================================================================================*/
+          //autoBind: true,
+          /*===============================================================================================================*/
+          pageable: true, //default paging function
+          /*===============================================================================================================*/
+          groupable: true, //default group panel
+          /*===============================================================================================================*/
+          //scrollable: { virtual : true }, //allows automatic go next page
+          /*===============================================================================================================*/
+          columnResizeHandleWidth: 5, //width in px of resize handler
+          /*===============================================================================================================*/
+          /*edit line with popup menu*/
+          //editable: "popup", //best to use with row button
+          editable: "inline", //best to use with row button
+          /*===============================================================================================================*/
+          //editable: true,
+          //navigatable: true,
           resizable: true,
           columns: $scope.columns,
+          /*column reorder and event*/
           reorderable: true,
-          columnReorder: function (e) {
-            console.log(e);
-          }
+          columnReorder: gridEvents.columnReorder,
+
+          change: gridEvents.change,
+          save: gridEvents.save,
+          remove: gridEvents.remove,
+          cancel: gridEvents.cancel,
+          edit: gridEvents.edit,
+          autoSync: true,
+          toolbar: ["create", "save", "cancel", "excel", "pdf"]
         };
 
-        $element.html("<div id='myGrid'></div>");
-        $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions);
+
+        function detailInit(e) {
+          $("<div/>").appendTo(e.detailCell).kendoGrid($scope.gridOptions)
+        }
+
+        ($scope.createGrid = function () {
+          var grid = $("#myGrid");
+
+          if (grid.data("kendoGrid")) {
+            grid.data("kendoGrid").destroy();
+            grid.empty();
+          } else {
+            $element.html("<div id='myGrid'></div>");
+          }
+          $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions);
+          console.log($scope.grid);
+        })();
+
+
+        //var lastCell = $scope.grid.tbody.find("tr:last td:last");
+        //$scope.grid.current(lastCell);
+        //$scope.grid.table.focus();
 
       });
 
-      var editColumn = {
-        command: [{
-          name: "Edit User",
-          click: function (e) {
-            e.preventDefault();
-            var data = this.dataItem($(e.target).closest("tr"));
-            console.log("User Id: ", data.id);
-            $scope.onEdit(data.id);
-          }
-        }]
+      /*===============================================================================================================*/
+      /*===============================================================================================================*/
+
+      var gridFilters = {
+        lastNameFilter: function (element,asd,zxc) {
+          console.log('element', element);
+          element.kendoDropDownList({
+            dataSource: ["custom", "list", "Doe", "Guy", "Кирпич"],
+            optionLabel: "--Select Value--"
+          });
+        }
       };
+
+      var gridEvents = {
+        columnReorder: function (e) {
+          console.log('columnReorder - ', e);
+        },
+        edit: function (e) {
+          //console.log('edit - ', e);
+          /*e.container.parent().keypress(function (event) {
+           console.log('kepressed!!!!');
+           if (event.which == 13) {
+           event.preventDefault();
+           } else {
+           e.container.focus();
+           }
+           });*/
+          editRowDuplicatePatch(e);
+        },
+        cancel: function (e) {
+          /*   e.preventDefault();
+           console.log('cancel - ', e);
+           this.refresh();*/
+        },
+        remove: function (e) {
+          console.log('remove - ', e);
+          console.log('MODELS - ', this.dataSource.data());
+
+          this.dataSource.sync();
+
+        },
+        change: function (e) {
+          console.log('change - ', e);
+        },
+        save: function (e) {
+          //this.dataSource.add(e.model);
+          //this.closeCell();
+          /*this.saveChanges();
+           this.refresh();
+           this.dataSource.sync();*/
+
+          console.log("saving changes - ", this);
+        }
+      };
+      var gridTransport = {
+        create: function (options) {
+          $timeout(function () {
+            $.ajax({
+              method: 'POST',
+              url: Api.urls.post,
+              data: {
+                models: kendo.stringify(options.data)
+              },
+              success: function (result) {
+                options.success(result);
+              }
+            })
+          }, 2000);
+        },
+        read: function (options) {
+          $timeout(function () {
+            $.ajax({
+              url: Api.urls.gridList,
+              data: {
+                models: kendo.stringify(options.data)
+              },
+              success: function (result) {
+                //console.log(angular.toJson(result));
+                options.success(result);
+              }
+            })
+          }, 2000);
+        },
+        update: function (options) {
+          $.ajax({
+            method: 'POST',
+            url: Api.urls.post,
+            data: {
+              data: kendo.stringify(options.data)
+            },
+            success: function (result) {
+              options.success(result);
+            }
+          });
+        },
+        destroy: function (options) {
+          console.log('options - ', options);
+          $.ajax({
+            url: 'http://mvc.gloria-jeans-portal.com/api/forms/delete/' + options.data._id
+          });
+        }
+      };
+      var gridTmpCustomize = {
+
+        altRowTemplate: function (columns) {
+          var tmp = $('<tr data-uid="#= uid #"></tr>');
+          var dataTmpl = '';
+
+          for (var i = 0; i < columns.length; i++) {
+
+            if (typeof columns[i].template != 'undefined') {
+              dataTmpl = columns[i].template;
+            } else if (typeof columns[i].field != 'undefined') {
+              dataTmpl = '#=' + columns[i].field + '#';
+            } else if (typeof columns[i].command != 'undefined') {
+              //continue;
+              continue;
+            } else {
+              dataTmpl = ' -- ';
+            }
+
+            tmp.append('<td colspan="1" style="background-color: green">' + dataTmpl + '</td>')
+
+          }
+
+          return tmp.html();
+
+        }
+
+      };
+      var editColumn = {
+        command: [
+          {
+            name: "edit_user",
+            text: "Form Edit",
+            width: '100',
+            click: function (e) {
+              e.preventDefault();
+              var data = this.dataItem($(e.target).closest("tr"));
+              console.log("User Id: ", data.id);
+              $scope.onEdit(data.id);
+            }
+          },
+          {name: "edit"},
+          {name: "destroy"}
+        ]
+      };
+
+      var editRowDuplicatePatch = function (e) {
+        var cells = e.container.children();
+        var cell;
+        var cell_elements;
+
+        for (var counter = 0; counter < cells.length - 1; counter++) {
+          cell = $(cells[counter]);
+          cell_elements = $(cells[counter]).children();
+          if (cell_elements.length > 1) {
+            console.log(cell_elements.first().siblings().remove());
+          }
+        }
+
+      };
+
+
+      /*===============================================================================================================*/
+      /*LOCALIZATION*/
+      /*===============================================================================================================*/
+
+      $("#language").kendoDropDownList({
+        change: function () {
+          kendo.ui.progress($("#myGrid"), true);
+          $.getScript("locals/kendo.messages." + this.value() + ".js", function () {
+            kendo.ui.progress($("#myGrid"), false);
+            $scope.createGrid();
+          });
+        },
+        dataTextField: "text",
+        dataValueField: "value",
+        dataSource: [
+          {text: "ru-RU"},
+          {text: "bg-BG"},
+          {text: "zh-CN"},
+          {text: "en-US"}
+
+        ]
+      });
+
+      $("#language").data("kendoDropDownList").trigger("change");
+      /*===============================================================================================================*/
 
 
     }

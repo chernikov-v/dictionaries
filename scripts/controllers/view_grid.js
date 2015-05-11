@@ -4,7 +4,7 @@ var ViewCtrl = angularApp.controller('ViewGridCtrl', function ($location,$route,
 
   $scope.goTo = function(_id){
 
-    $location.path('/user').search({id: _id})
+    $location.path('/user').search({id: _id});
     $route.reload();
   };
 });
