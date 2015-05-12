@@ -9,6 +9,7 @@ angularApp.factory('Api', function ($resource, $http, $q) {
  POST http://mvc.gloria-jeans-portal.com/api/forms/upsert добавляем нового или изменяем текущего формат отправляемых данных тот же
  GET http://mvc.gloria-jeans-portal.com/api/forms/list получаем список данных для gridview
  GET http://mvc.gloria-jeans-portal.com/api/forms/schema получаем схему для gridview
+ GET http://mvc.gloria-jeans-portal.com/api/forms/editadd добавляем или изменяем элемент
  GET http://mvc.gloria-jeans-portal.com/api/forms/delete/a140d039-e4ac-d1cb-3726-bc91e04df936
 *
 *
@@ -34,8 +35,9 @@ var apiURLs = {
     post: mainUrl + "upsert",
     gridList: mainUrl + 'list',
     gridSchema: mainUrl + 'schema',
+    editadd: mainUrl+ "editadd",
     deleteItem: function(id){
-    return mainUrl + 'delete/' + (typeof id != 'undefined')?id:'';
+    return mainUrl + 'delete/' + id;
   }
 
 };
