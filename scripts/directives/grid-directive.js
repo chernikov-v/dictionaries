@@ -28,7 +28,8 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
               offlineStorage: "offline-kendo",
               transport: gridTransport,
               schema: $scope.schema,
-              pageSize: 7
+              pageSize: 7,
+              serverPaging: true
             }),
             height: 400,
             filterable: {
@@ -43,7 +44,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             },
             sortable: true,
             allowCopy: true,
-            serverPaging: true,
             selectable: "multiple row",
             autoBind: true,
             pageable: true,
@@ -56,6 +56,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             columns: $scope.columns,
             reorderable: true,
             columnReorder: gridEvents.columnReorder,
+            edit: gridEvents.edit,
             autoSync: true,
             toolbar: ["create", "save", "cancel", "destroy", "excel"]
           };
