@@ -1,3 +1,11 @@
 .field input,.my-datepicker-btn{
     height: 30px;
 }
+.k-grid-edit_user{
+    content: url("../img/form.png");
+    height: 70px;
+    width: 90px;
+}
+.k-grid-delete{
+    width: 90px;
+}

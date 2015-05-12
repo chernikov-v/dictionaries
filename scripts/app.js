@@ -44,6 +44,21 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
       .when('/image', {
         template: '<image-grid></image-grid>'
       })
+      .when('/signalr', {
+        template: '<signalr-grid></signalr-grid>'
+      })
+      .when('/multicolumn', {
+        template: '<multicolumn-grid></multicolumn-grid>'
+      })
+      .when('/batchediting', {
+        template: '<batchediting-grid></batchediting-grid>'
+      })
+      .when('/detailtemlate', {
+        template: '<detailtemlate-grid></detailtemlate-grid>'
+      })
+      .when('/toolbartemplate', {
+        template: '<toolbartemplate-grid></toolbartemplate-grid>'
+      })
         .otherwise({
             redirectTo: '/grid'
         });
