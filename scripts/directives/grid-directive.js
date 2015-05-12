@@ -19,28 +19,28 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
 
       $http.get('http://mvc.gloria-jeans-portal.com/api/forms/columns').success(function (columns) {
         $http.get('http://mvc.gloria-jeans-portal.com/api/forms/schema').success(function (schema) {
-          console.log(columns, angular.toJson(schema));
+          //console.log(columns, angular.toJson(schema));
 
           $scope.columns = columns.columns;
           $scope.schema = schema.schema;
           /*$scope.schema = angular.fromJson({
-            "schema": {
-              "model": {
-                "fields": {
-                  "_id": {"type": "string"},
-                  "formId": {"type": "string"},
-                  "firstName": {"type": "string"},
-                  "lastName": {"type": "string"},
-                  "gender": {"type": "boolean"},
-                  "emailAddress": {"type": "string"},
-                  "password": {"type": "string"},
-                  "birthDate": {"type": "date"},
-                  "yourBrowser": {"type": "number"},
-                  "additionalComments": {"type": "string"}
-                }
-              }
-            }
-          });*/
+           "schema": {
+           "model": {
+           "fields": {
+           "_id": {"type": "string"},
+           "formId": {"type": "string"},
+           "firstName": {"type": "string"},
+           "lastName": {"type": "string"},
+           "gender": {"type": "boolean"},
+           "emailAddress": {"type": "string"},
+           "password": {"type": "string"},
+           "birthDate": {"type": "date"},
+           "yourBrowser": {"type": "number"},
+           "additionalComments": {"type": "string"}
+           }
+           }
+           }
+           });*/
 
 
           //$http.get('v.json').success(function(response){
@@ -73,7 +73,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
               //batch: true,
               transport: gridTransport,
 
-              requestStart: function (e) {
+               /*requestStart: function (e) {
                 if (e.type != "read") {
                   console.log(kendo.format("Request start ({0})", e.type));
                 }
@@ -82,7 +82,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
                 if (e.type != "read") {
                   console.log(kendo.format("Request end ({0})", e.type));
                 }
-              },
+              },*/
               schema: $scope.schema,
               pageSize: 7 //elements per/page
             }),
@@ -108,7 +108,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             /*===============================================================================================================*/
             //altRowTemplate: gridTmpCustomize.altRowTemplate($scope.columns), //customize row template
             /*===============================================================================================================*/
-            //autoBind: true,
+            autoBind: true,
             /*===============================================================================================================*/
             pageable: true, //default paging function
             /*===============================================================================================================*/
@@ -123,7 +123,9 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             //editable: "inline", //best to use with row button
             /*===============================================================================================================*/
             navigatable: true,
-            editable: true,
+            editable: {
+              confirmation: true
+            },
             resizable: true,
             columns: $scope.columns,
             /*column reorder and event*/
@@ -136,7 +138,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             cancel: gridEvents.cancel,
             edit: gridEvents.edit,
             autoSync: true,
-            toolbar: ["create", "save", "cancel", "excel"/*, "pdf"*/]
+            toolbar: ["create", "save", "cancel", "destroy", "excel"/*, "pdf"*/]
           };
 
           ($scope.createGrid = function () {
@@ -148,9 +150,10 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             } else {
               $element.html("<div id='myGrid'></div>");
             }
-            $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions);
-            console.log($scope.grid);
+            $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions).data("kendoGrid");
+            //console.log($scope.grid);
             generateOnline();
+            custDelete();
           })();
         });
       });
@@ -194,10 +197,10 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
            this.refresh();*/
         },
         remove: function (e) {
-          e.preventDefault();
+          //e.preventDefault();
 
-             console.log('remove - ', e);
-     /*      console.log('MODELS - ', this.dataSource.data());
+          //console.log('remove - ', e);
+          /*      console.log('MODELS - ', this.dataSource.data());
 
            this.dataSource.sync();*/
         },
@@ -229,7 +232,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           })
         },
         read: function (options) {
-          $timeout(function () {
+          //$timeout(function () {
             $.ajax({
               url: Api.urls.gridList,
               data: {
@@ -239,8 +242,8 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
                 console.log(result);
                 options.success(result);
               }
-            })
-          }, 2000);
+            });
+          //}, 2000);
         },
         update: function (options) {
           console.log(options.data._id);
@@ -309,7 +312,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             }
           },
           //{name: "edit"},
-          {name: "destroy"}
+          //{name: "destroy"}
         ]
       };
 
@@ -326,6 +329,26 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           }
         }
 
+      };
+
+      /*===============================================================================================================*/
+      /*CUSTOM TOOLBAR DELETE BUTTON*/
+      /*===============================================================================================================*/
+      var custDelete = function(){
+        $(".k-grid-delete").click(function(e) {
+          e.preventDefault();
+
+          //console.log(this, e);
+          //console.log($scope.grid.select());
+            console.log($scope.grid);
+          if($scope.grid.select().length == 0){
+            alert("Select some rows for deleting!");
+          }else{
+            $scope.grid.removeRow($scope.grid.select());
+            $scope.grid.saveChanges();
+          }
+
+        });
       };
 
 
@@ -358,6 +381,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
       /*OFFLINE MODE*/
       /*===============================================================================================================*/
       var generateOnline = function () {
+        $scope.grid.dataSource.sync();
         var online = localStorage["kendo-grid-online"] == "true" || localStorage["kendo-grid-online"] === undefined;
 
         if (!online) {
@@ -373,7 +397,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             $scope.gridOptions.dataSource.online(online);
           }
         });
-      }
+      };
       /*===============================================================================================================*/
 
 
