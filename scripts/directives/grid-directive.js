@@ -124,7 +124,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             /*===============================================================================================================*/
             navigatable: true,
             editable: {
-              confirmation: true
+              confirmation: false
             },
             resizable: true,
             columns: $scope.columns,
@@ -227,7 +227,9 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
               data: kendo.stringify(options.data)
             },
             success: function (result) {
-              options.success(result);
+              console.log(" create result - ", result, options);
+
+              options.success(options.data);
             }
           })
         },
@@ -239,7 +241,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
                 models: kendo.stringify(options.data)
               },
               success: function (result) {
-                console.log(result);
+                console.log("read result - ", result);
                 options.success(result);
               }
             });
@@ -258,6 +260,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
               data: kendo.stringify(options.data)
             },
             success: function (result) {
+              //console.log("update result - ", result);
               options.success(result);
             }
           });
@@ -265,7 +268,11 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         destroy: function (options) {
           console.log('options - ', options);
           $.ajax({
-            url: 'http://mvc.gloria-jeans-portal.com/api/forms/delete/' + options.data._id
+            url: 'http://mvc.gloria-jeans-portal.com/api/forms/delete/' + options.data._id,
+            success: function (result) {
+              //console.log("destroy result - ", result);
+              options.success(result);
+            }
           });
         }
       };
@@ -337,17 +344,20 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
       var custDelete = function(){
         $(".k-grid-delete").click(function(e) {
           e.preventDefault();
-
+         var rows = $scope.grid.select();
           //console.log(this, e);
           //console.log($scope.grid.select());
             console.log($scope.grid);
-          if($scope.grid.select().length == 0){
+          if(rows.length == 0){
             alert("Select some rows for deleting!");
           }else{
-            $scope.grid.removeRow($scope.grid.select());
-            $scope.grid.saveChanges();
+            if(confirm(rows.length + "will be deleted! Are you sure?")){
+              for (var i = 0; i < rows.length; i++){
+                $scope.grid.removeRow(rows[i]);
+              }
+              $scope.grid.saveChanges();
+            };
           }
-
         });
       };
 
