@@ -29,12 +29,12 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
               schema: $scope.schema,
               pageSize: 7,
               serverPaging: true,
-              //serverFiltering: true,
-              //serverSorting: true
+              serverFiltering: true,
+              serverSorting: true
             }),
             height: 400,
             filterable: {
-              extra: false,
+              extra: true,
               mode: "menu",
               operators: {
                 string: {
@@ -200,7 +200,13 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             kendo.ui.progress($("#myGrid"), true);
             $.getScript("locals/kendo.messages." + this.value() + ".js", function () {
               kendo.ui.progress($("#myGrid"), false);
-              createGrid();
+
+                $http.get(Api.urls.gridConfig).success(function (response) {
+                  $scope.schema.total = function(resp) {
+                    return response.total;
+                  };
+                  createGrid();
+                });
             });
           },
           dataTextField: "text",

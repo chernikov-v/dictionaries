@@ -19,7 +19,7 @@ angularApp.factory('Api', function ($resource, $http, $q) {
 
 var mainUrl = 'http://mvc.gloria-jeans-portal.com/api/';
 
-  var formUrl =  mainUrl + "forms/'";
+  var formUrl =  mainUrl + "forms/";
   var gridUrl = mainUrl + "User/";
 
 
