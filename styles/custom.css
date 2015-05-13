@@ -9,3 +9,6 @@
 .k-grid-delete{
     width: 90px;
 }
+.k-pager-nav span{
+    margin: 6px;
+}

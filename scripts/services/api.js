@@ -17,27 +17,30 @@ angularApp.factory('Api', function ($resource, $http, $q) {
 *
 * */
 
+var mainUrl = 'http://mvc.gloria-jeans-portal.com/api/';
 
+  var formUrl =  mainUrl + "forms/'";
+  var gridUrl = mainUrl + "User/";
 
-  var mainUrl = 'http://mvc.gloria-jeans-portal.com/api/forms/';
 
 var apiURLs = {
-    get : mainUrl + "get",
+    get : formUrl + "get",
     getById: function(id){
       var url;
       if (typeof id != 'undefined' && id != null && id != '') {
-        url =  mainUrl + 'get/' + id;
+        url =  formUrl + 'get/' + id;
       } else {
-        url =  mainUrl + 'get'
+        url =  formUrl + 'get'
       }
       return url;
     },
-    post: mainUrl + "upsert",
-    gridList: mainUrl + 'list',
-    gridSchema: mainUrl + 'schema',
-    editadd: mainUrl+ "editadd",
+    post: formUrl + "upsert",
+    gridConfig: gridUrl + 'grid',
+    gridList: gridUrl + 'list',
+    gridSchema: gridUrl + 'schema',
+    editadd: gridUrl+ "editadd",
     deleteItem: function(id){
-    return mainUrl + 'delete/' + id;
+    return gridUrl + 'delete/' + id;
   }
 
 };
