@@ -59,14 +59,14 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
             selectable: "multiple row",
             autoBind: true,
             pageable: {
-              pageSize: 5,
+              pageSize: 7,
               previousNext: false,
               numeric: false,
               //buttonCount: 3,
               //input: true,
-              pageSizes: true,
+              //pageSizes: true,
               //pageSizes: [2, 3, 4],
-              refresh: true,
+              //refresh: true,
               info: true
           },
             columnResizeHandleWidth: 5,

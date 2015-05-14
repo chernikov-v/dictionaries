@@ -14,9 +14,8 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         //console.log(response);
         $scope.columns = response.column.columns;
         $scope.schema = response.schema;
-        $scope.schema.total = function (resp) {
-          return response.total;
-        };
+        $scope.total = response.total;
+        $scope.schema.total = "total";
         $scope.schema.model.id = "id";
 
         $scope.columns.push(editColumn);
@@ -55,13 +54,13 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           selectable: "multiple row",
           autoBind: true,
           pageable: {
-            pageSize: 5,
+            pageSize: 10,
             //previousNext: false,
             //numeric: false,
             buttonCount: 3,
             //input: true,
-            pageSizes: true,
-            //pageSizes: [2, 3, 4],
+            //pageSizes: true,
+            pageSizes: [10, 20, 50],
             refresh: true,
             info: true
           },
@@ -77,6 +76,13 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           reorderable: true,
           columnReorder: gridEvents.columnReorder,
           edit: gridEvents.edit,
+          dataBinding: function(qwe){
+            console.log("dataBinding");
+          },
+          dataBound: function(qwe){
+          console.log("dataBound");
+
+        },
           autoSync: true,
           toolbar: ["create", "save", "cancel", "destroy", "excel"]
         };
@@ -129,6 +135,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
                 data: kendo.stringify(options.data)
               },
               success: function (result) {
+                result.total = $scope.total;
                 options.success(result);
               }
             });
@@ -230,11 +237,9 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         $(window).on("offline", function () {
           $scope.grid.dataSource.online(false);
           console.log("navigator online - ", navigator.onLine);
-          //alert("OFFLINE");
         });
         $(window).on("online", function () {
           $scope.grid.dataSource.online(true);
-          //alert("ONLINE");
         });
       };
       /*===============================================================================================================*/
@@ -245,23 +250,22 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         var online = localStorage["kendo-grid-online"] == "true" || localStorage["kendo-grid-online"] === undefined;
         if (!online) {
           $("#online").removeAttr("checked");
-          $scope.gridOptions.dataSource.online(false);
+          //$scope.gridOptions.dataSource.online(false);
+          $scope.grid.dataSource.online(false);
         }
         $("#online").kendoMobileSwitch({
           value: online,
           change: function () {
             online = this.value();
             localStorage["kendo-grid-online"] = online;
-            $scope.gridOptions.dataSource.online(online);
+            $scope.grid.dataSource.online(online);
             if(online){
-              $scope.gridOptions.dataSource.schema.total
-            }else{
-
+              console.log($scope.grid);
+              $scope.grid.dataSource.fetch();
             }
           }
         });
       };
-
     }
   }
 });
