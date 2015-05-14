@@ -10,24 +10,25 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
     },
     link: function ($scope, $element, $attrs, $controller) {
 
-        $http.get(Api.urls.gridConfig).success(function (response) {
-
-            $scope.columns = response.column.columns;
-           $scope.schema = response.schema;
-          $scope.schema.total = function(resp) {
-            return response.total;
-          };
-          $scope.schema.model.id = "id";
-
-
-          $scope.columns.push(editColumn);
+      $http.get(Api.urls.gridConfig).success(function (response) {
+        //console.log(response);
+        $scope.columns = response.columns;
+        $scope.fieldsSchema = response.schema;
+        $scope.columns.push(editColumn);
 
           $scope.gridOptions = {
             dataSource: new kendo.data.DataSource({
               offlineStorage: "offline-kendo",
               transport: gridTransport,
-              schema: $scope.schema,
-              pageSize: 7,
+              schema: {
+                data: "data",
+                total: "total",
+                model: {
+                  id: "id",
+                  fields : $scope.fieldsSchema
+                }
+              },
+              pageSize: 10,
               serverPaging: true,
               serverFiltering: true,
               serverSorting: true
@@ -62,12 +63,6 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
               pageSize: 7,
               previousNext: false,
               numeric: false,
-              //buttonCount: 3,
-              //input: true,
-              //pageSizes: true,
-              //pageSizes: [2, 3, 4],
-              //refresh: true,
-              info: true
           },
             columnResizeHandleWidth: 5,
             navigatable: true,
@@ -75,7 +70,6 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
               confirmation: false
             },
             resizable: true,
-            columnMenu: true,
             columns: $scope.columns,
             reorderable: true,
             columnReorder: gridEvents.columnReorder,
@@ -213,13 +207,7 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
             kendo.ui.progress($("#myGrid"), true);
             $.getScript("locals/kendo.messages." + this.value() + ".js", function () {
               kendo.ui.progress($("#myGrid"), false);
-
-                $http.get(Api.urls.gridConfig).success(function (response) {
-                  $scope.schema.total = function(resp) {
-                    return response.total;
-                  };
-                  createGrid();
-                });
+              createGrid();
             });
           },
           dataTextField: "text",
@@ -264,6 +252,9 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
             online = this.value();
             localStorage["kendo-grid-online"] = online;
             $scope.gridOptions.dataSource.online(online);
+            if(online){
+              $scope.grid.dataSource.fetch();
+            }
           }
         });
       };

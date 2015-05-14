@@ -12,20 +12,23 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
 
       $http.get(Api.urls.gridConfig).success(function (response) {
         //console.log(response);
-        $scope.columns = response.column.columns;
-        $scope.schema = response.schema;
-        $scope.total = response.total;
-        $scope.schema.total = "total";
-        $scope.schema.model.id = "id";
-
+        $scope.columns = response.columns;
+        $scope.fieldsSchema = response.schema;
         $scope.columns.push(editColumn);
 
         $scope.gridOptions = {
           dataSource: new kendo.data.DataSource({
             offlineStorage: "offline-kendo",
             transport: gridTransport,
-            schema: $scope.schema,
-            pageSize: 7,
+            schema: {
+              data: "data",
+              total: "total",
+              model: {
+                //id: "_id",
+                fields : $scope.fieldsSchema
+              }
+            },
+            pageSize: 10,
             serverPaging: true,
             serverFiltering: true,
             serverSorting: true
@@ -55,11 +58,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           autoBind: true,
           pageable: {
             pageSize: 10,
-            //previousNext: false,
-            //numeric: false,
             buttonCount: 3,
-            //input: true,
-            //pageSizes: true,
             pageSizes: [10, 20, 50],
             refresh: true,
             info: true
@@ -69,20 +68,11 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           editable: {
             confirmation: false
           },
-
           resizable: true,
-          //columnMenu: true,
           columns: $scope.columns,
           reorderable: true,
           columnReorder: gridEvents.columnReorder,
           edit: gridEvents.edit,
-          dataBinding: function(qwe){
-            console.log("dataBinding");
-          },
-          dataBound: function(qwe){
-          console.log("dataBound");
-
-        },
           autoSync: true,
           toolbar: ["create", "save", "cancel", "destroy", "excel"]
         };
@@ -135,7 +125,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
                 data: kendo.stringify(options.data)
               },
               success: function (result) {
-                result.total = $scope.total;
+                result.data.id = result.data._id;
                 options.success(result);
               }
             });
@@ -209,13 +199,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             kendo.ui.progress($("#myGrid"), true);
             $.getScript("locals/kendo.messages." + this.value() + ".js", function () {
               kendo.ui.progress($("#myGrid"), false);
-
-              $http.get(Api.urls.gridConfig).success(function (response) {
-                $scope.schema.total = function (resp) {
-                  return response.total;
-                };
-                createGrid();
-              });
+              createGrid();
             });
           },
           dataTextField: "text",
@@ -236,7 +220,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         $scope.grid.dataSource.online(navigator.onLine);
         $(window).on("offline", function () {
           $scope.grid.dataSource.online(false);
-          console.log("navigator online - ", navigator.onLine);
         });
         $(window).on("online", function () {
           $scope.grid.dataSource.online(true);
@@ -250,7 +233,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         var online = localStorage["kendo-grid-online"] == "true" || localStorage["kendo-grid-online"] === undefined;
         if (!online) {
           $("#online").removeAttr("checked");
-          //$scope.gridOptions.dataSource.online(false);
           $scope.grid.dataSource.online(false);
         }
         $("#online").kendoMobileSwitch({
@@ -260,7 +242,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             localStorage["kendo-grid-online"] = online;
             $scope.grid.dataSource.online(online);
             if(online){
-              console.log($scope.grid);
               $scope.grid.dataSource.fetch();
             }
           }

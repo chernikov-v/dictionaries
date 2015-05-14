@@ -16,7 +16,11 @@
     float: left;
     position: relative;
     width: 49.8%;
-    min-width: 40%;
+    min-width: 20%;
     box-sizing: border-box;
     border-top: 0;
+}
+#listView{
+    display: block;
+    min-width: 1000px;
 }

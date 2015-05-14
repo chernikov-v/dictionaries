@@ -42,7 +42,7 @@ angularApp.directive('list', function ($http, $location, $timeout, Api) {
       }).data("kendoListView");
 
       $(".k-add-button").click(function(e) {
-        listView.add();
+        $scope.listView.add();
         e.preventDefault();
       });
 
