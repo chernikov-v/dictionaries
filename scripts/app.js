@@ -36,7 +36,10 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
         templateUrl: 'views/grid-scroll.html',
         controller: 'ViewGridCtrl'
         })
-        .when('/hierarchy', {
+        .when('/list', {
+          templateUrl: 'views/list.html'
+        })
+      .when('/hierarchy', {
           template: '<hierarchy-grid></hierarchy-grid>'
         })
         .when('/aggregates', {

@@ -12,3 +12,11 @@
 .k-pager-nav span{
     margin: 6px;
 }
+.list-view {
+    float: left;
+    position: relative;
+    width: 49.8%;
+    min-width: 40%;
+    box-sizing: border-box;
+    border-top: 0;
+}
