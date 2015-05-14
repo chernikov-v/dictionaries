@@ -32,33 +32,37 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
         templateUrl: 'views/grid.html',
         controller: 'ViewGridCtrl'
         })
+        .when('/grid-scroll', {
+        templateUrl: 'views/grid-scroll.html',
+        controller: 'ViewGridCtrl'
+        })
         .when('/hierarchy', {
           template: '<hierarchy-grid></hierarchy-grid>'
         })
-      .when('/aggregates', {
-        template: '<aggregates-grid></aggregates-grid>'
-      })
-      .when('/frozen', {
-        template: '<frozen-grid></frozen-grid>'
-      })
-      .when('/image', {
-        template: '<image-grid></image-grid>'
-      })
-      .when('/signalr', {
-        template: '<signalr-grid></signalr-grid>'
-      })
-      .when('/multicolumn', {
-        template: '<multicolumn-grid></multicolumn-grid>'
-      })
-      .when('/batchediting', {
-        template: '<batchediting-grid></batchediting-grid>'
-      })
-      .when('/detailtemlate', {
-        template: '<detailtemlate-grid></detailtemlate-grid>'
-      })
-      .when('/toolbartemplate', {
-        template: '<toolbartemplate-grid></toolbartemplate-grid>'
-      })
+        .when('/aggregates', {
+          template: '<aggregates-grid></aggregates-grid>'
+        })
+        .when('/frozen', {
+          template: '<frozen-grid></frozen-grid>'
+        })
+        .when('/image', {
+          template: '<image-grid></image-grid>'
+        })
+        .when('/signalr', {
+          template: '<signalr-grid></signalr-grid>'
+        })
+        .when('/multicolumn', {
+          template: '<multicolumn-grid></multicolumn-grid>'
+        })
+        .when('/batchediting', {
+          template: '<batchediting-grid></batchediting-grid>'
+        })
+        .when('/detailtemlate', {
+          template: '<detailtemlate-grid></detailtemlate-grid>'
+        })
+        .when('/toolbartemplate', {
+          template: '<toolbartemplate-grid></toolbartemplate-grid>'
+        })
         .otherwise({
             redirectTo: '/grid'
         });

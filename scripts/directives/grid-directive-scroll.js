@@ -1,7 +1,7 @@
 'use strict';
 
 
-angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
+angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Api) {
 
   return {
     restrict: 'E',
@@ -10,83 +10,86 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
     },
     link: function ($scope, $element, $attrs, $controller) {
 
-      $http.get(Api.urls.gridConfig).success(function (response) {
-        //console.log(response);
-        $scope.columns = response.column.columns;
-        $scope.schema = response.schema;
-        $scope.schema.total = function (resp) {
-          return response.total;
-        };
-        $scope.schema.model.id = "id";
+        $http.get(Api.urls.gridConfig).success(function (response) {
 
-        $scope.columns.push(editColumn);
+            $scope.columns = response.column.columns;
+           $scope.schema = response.schema;
+          $scope.schema.total = function(resp) {
+            return response.total;
+          };
+          $scope.schema.model.id = "id";
 
-        $scope.gridOptions = {
-          dataSource: new kendo.data.DataSource({
-            offlineStorage: "offline-kendo",
-            transport: gridTransport,
-            schema: $scope.schema,
-            pageSize: 7,
-            serverPaging: true,
-            serverFiltering: true,
-            serverSorting: true
-          }),
-          height: 400,
-          scrollable: true,
-          filterable: {
-            extra: true,
-            mode: "menu",
-            operators: {
-              string: {
-                contains: "Contains"
-              },
-              date: {
-                gte: "gte",
-                lte: "lte"
-              },
-              mode: "menu"
-            }
-          },
-          sortable: {
-            mode: "multiple",
-            allowUnsort: true
-          },
-          allowCopy: true,
-          selectable: "multiple row",
-          autoBind: true,
-          pageable: {
-            pageSize: 5,
-            //previousNext: false,
-            //numeric: false,
-            buttonCount: 3,
-            //input: true,
-            pageSizes: true,
-            //pageSizes: [2, 3, 4],
-            refresh: true,
-            info: true
-          },
-          columnResizeHandleWidth: 5,
-          navigatable: true,
-          editable: {
-            confirmation: false
-          },
 
-          resizable: true,
-          //columnMenu: true,
-          columns: $scope.columns,
-          reorderable: true,
-          columnReorder: gridEvents.columnReorder,
-          edit: gridEvents.edit,
-          autoSync: true,
-          toolbar: ["create", "save", "cancel", "destroy", "excel"]
-        };
+          $scope.columns.push(editColumn);
 
-        createGrid();
-        createOnlineSwitcher();
-        //subscribeBrowserOnline();
-        customDeleteToolbar();
-        createLanguageSwither();
-      });
+          $scope.gridOptions = {
+            dataSource: new kendo.data.DataSource({
+              offlineStorage: "offline-kendo",
+              transport: gridTransport,
+              schema: $scope.schema,
+              pageSize: 7,
+              serverPaging: true,
+              serverFiltering: true,
+              serverSorting: true
+            }),
+            height: 400,
+            scrollable: {
+              virtual: true
+            },
+            filterable: {
+              extra: true,
+              mode: "menu",
+              operators: {
+                string: {
+                  startswith: "Starts with",
+                  eq: "Is equal to",
+                  neq: "Is not equal to",
+                  contains: "Contains",
+                  doesnotcantain: "Does not contain",
+                  endswith: "Ends With",
+                  customOperator: "Custom Operator"
+                }
+              }
+            },
+            sortable: {
+              mode: "multiple",
+              allowUnsort: true
+            },
+            allowCopy: true,
+            selectable: "multiple row",
+            autoBind: true,
+            pageable: {
+              pageSize: 5,
+              previousNext: false,
+              numeric: false,
+              //buttonCount: 3,
+              //input: true,
+              pageSizes: true,
+              //pageSizes: [2, 3, 4],
+              refresh: true,
+              info: true
+          },
+            columnResizeHandleWidth: 5,
+            navigatable: true,
+            editable: {
+              confirmation: false
+            },
+            resizable: true,
+            columnMenu: true,
+            columns: $scope.columns,
+            reorderable: true,
+            columnReorder: gridEvents.columnReorder,
+            edit: gridEvents.edit,
+            autoSync: true,
+            toolbar: ["create", "save", "cancel", "destroy", "excel"]
+          };
+
+          createGrid();
+          createOnlineSwitcher();
+          //subscribeBrowserOnline();
+          customDeleteToolbar();
+          createLanguageSwither();
+        });
 
 
       /*===============================================================================================================*/
@@ -121,18 +124,18 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
       var gridTransport = {
         create: create_update,
         read: /*Api.urls.gridList,*/
-          function (options) {
-            $.ajax({
-              method: "POST",
-              url: Api.urls.gridList,
-              data: {
-                data: kendo.stringify(options.data)
-              },
-              success: function (result) {
-                options.success(result);
-              }
-            });
-          },
+        function (options) {
+          $.ajax({
+            method: "POST",
+            url: Api.urls.gridList,
+            data: {
+              data: kendo.stringify(options.data)
+            },
+            success: function (result) {
+              options.success(result);
+            }
+          });
+        },
         update: create_update,
         destroy: function (options) {
           $.ajax({
@@ -141,7 +144,15 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
               options.success(result);
             }
           });
-        }
+        }/*,
+        parameterMap: function (data, type) {
+          if (type == "read") {
+            return {
+              take: data.take,
+              skip: data.skip
+            }
+          }
+      }*/
       };
       /*===============================================================================================================*/
       /*ADDITIONAL COLUMN OBJ*/
@@ -203,12 +214,12 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             $.getScript("locals/kendo.messages." + this.value() + ".js", function () {
               kendo.ui.progress($("#myGrid"), false);
 
-              $http.get(Api.urls.gridConfig).success(function (response) {
-                $scope.schema.total = function (resp) {
-                  return response.total;
-                };
-                createGrid();
-              });
+                $http.get(Api.urls.gridConfig).success(function (response) {
+                  $scope.schema.total = function(resp) {
+                    return response.total;
+                  };
+                  createGrid();
+                });
             });
           },
           dataTextField: "text",
@@ -225,14 +236,14 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
       /*===============================================================================================================*/
       /*OFFLINE MODE*/
       /*===============================================================================================================*/
-      var subscribeBrowserOnline = function () {
+      var subscribeBrowserOnline = function(){
         $scope.grid.dataSource.online(navigator.onLine);
-        $(window).on("offline", function () {
+        $(window).on("offline", function() {
           $scope.grid.dataSource.online(false);
           console.log("navigator online - ", navigator.onLine);
           //alert("OFFLINE");
         });
-        $(window).on("online", function () {
+        $(window).on("online", function() {
           $scope.grid.dataSource.online(true);
           //alert("ONLINE");
         });
@@ -253,11 +264,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             online = this.value();
             localStorage["kendo-grid-online"] = online;
             $scope.gridOptions.dataSource.online(online);
-            if(online){
-              $scope.gridOptions.dataSource.schema.total
-            }else{
-
-            }
           }
         });
       };
