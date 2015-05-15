@@ -10,7 +10,22 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
     },
     link: function ($scope, $element, $attrs, $controller) {
 
+    /* "filterable": {
+        "multi": true,
+          "dataSource": {
+          "transport": {
+            "read": "http://mvc.gloria-jeans-portal.com/api/User/list"
+          },
+          "schema":{
+            "data":"data"
+          }
+        }
+      }*/
+
+
       $http.get(Api.urls.gridConfig).success(function (response) {
+        //$http.get("static-data/server_columns").success(function (response) {
+
         //console.log(response);
         $scope.columns = response.columns;
         $scope.fieldsSchema = response.schema;
@@ -21,7 +36,7 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
               offlineStorage: "offline-kendo",
               transport: gridTransport,
               schema: {
-                data: "data",
+                //data: "data",
                 total: "total",
                 model: {
                   id: "id",
@@ -39,7 +54,7 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
             },
             filterable: {
               extra: true,
-              mode: "menu",
+              mode: "row",
               operators: {
                 string: {
                   startswith: "Starts with",
@@ -114,19 +129,39 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
           }
         });
       };
-
+      var filterParser = function (obj) {
+        var tmp = [];
+        if(typeof obj.filters == 'undefined'){
+          tmp.push(obj)
+        }else{
+          for(var j = 0; j < obj.filters.length; j++){
+            tmp = tmp.concat(filterParser(obj.filters[j]));
+          }
+        }
+        return tmp;
+      };
       var gridTransport = {
         create: create_update,
-        read: /*Api.urls.gridList,*/
-        function (options) {
+        read: function (options) {
+          var data = options.data;
+
+          if(typeof data.filter != 'undefined'){
+            console.log('result ', filterParser(data.filter));
+            data.filter = filterParser(options.data.filter);
+          }
+
           $.ajax({
             method: "POST",
             url: Api.urls.gridList,
             data: {
-              data: kendo.stringify(options.data)
+              data: kendo.stringify(data)
             },
             success: function (result) {
-              options.success(result);
+              /* for(var i = 0; i<result.data.length;i++){
+               result.data[i]._id = result.data[i].id;
+               }*/
+              result.data.total = result.total;
+              options.success(result.data);
             }
           });
         },

@@ -11,6 +11,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
     link: function ($scope, $element, $attrs, $controller) {
 
       $http.get(Api.urls.gridConfig).success(function (response) {
+      //$http.get("static-data/server_columns").success(function (response) {
 
         $scope.columns = response.columns;
         $scope.fieldsSchema = response.schema;
@@ -35,8 +36,10 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           }),
           height: 400,
           scrollable: true,
+          //columnMenu: true,
           filterable: {
-            extra: true,
+            extra: false,
+            //mode: "menu",
             mode: "menu",
             operators: {
               string: {
