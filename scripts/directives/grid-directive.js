@@ -11,7 +11,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
     link: function ($scope, $element, $attrs, $controller) {
 
       $http.get(Api.urls.gridConfig).success(function (response) {
-        //console.log(response);
+
         $scope.columns = response.columns;
         $scope.fieldsSchema = response.schema;
         $scope.columns.push(editColumn);
@@ -21,11 +21,11 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             offlineStorage: "offline-kendo",
             transport: gridTransport,
             schema: {
-              data: "data",
+              //data: "data",
               total: "total",
               model: {
-                //id: "_id",
-                fields : $scope.fieldsSchema
+                id: "id",
+                fields: $scope.fieldsSchema
               }
             },
             pageSize: 10,
@@ -80,7 +80,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
         createGrid();
         createOnlineSwitcher();
         //subscribeBrowserOnline();
-        customDeleteToolbar();
         createLanguageSwither();
       });
 
@@ -96,7 +95,6 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           cell.find("input").focus();
         }
       };
-
       /*===============================================================================================================*/
       /*GRID TRANSPORT*/
       /*===============================================================================================================*/
@@ -113,32 +111,55 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           }
         });
       };
-
+      var filterParser = function (obj) {
+        var tmp = [];
+            if(typeof obj.filters == 'undefined'){
+              tmp.push(obj)
+            }else{
+              for(var j = 0; j < obj.filters.length; j++){
+                tmp = tmp.concat(filterParser(obj.filters[j]));
+              }
+            }
+        return tmp;
+      };
       var gridTransport = {
         create: create_update,
-        read: /*Api.urls.gridList,*/
-          function (options) {
-            $.ajax({
-              method: "POST",
-              url: Api.urls.gridList,
-              data: {
-                data: kendo.stringify(options.data)
-              },
-              success: function (result) {
-                result.data.id = result.data._id;
-                options.success(result);
-              }
-            });
-          },
+        read: function (options) {
+          var data = options.data;
+
+          if(typeof data.filter != 'undefined'){
+            console.log('result ', filterParser(data.filter));
+            data.filter = filterParser(options.data.filter);
+          }
+
+          $.ajax({
+            method: "POST",
+            url: Api.urls.gridList,
+            data: {
+              data: kendo.stringify(data)
+            },
+            success: function (result) {
+              /* for(var i = 0; i<result.data.length;i++){
+               result.data[i]._id = result.data[i].id;
+               }*/
+              result.data.total = result.total;
+              options.success(result.data);
+            }
+          });
+        },
         update: create_update,
         destroy: function (options) {
+          console.log(options);
+
           $.ajax({
-            url: Api.urls.deleteItem(options.data._id),
+            url: Api.urls.deleteItem(options.data.id),
             success: function (result) {
               options.success(result);
             }
           });
-        }
+        }/*,
+         parameterMap: function(data, type) {
+         }*/
       };
       /*===============================================================================================================*/
       /*ADDITIONAL COLUMN OBJ*/
@@ -170,6 +191,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
           $element.html("<div id='myGrid'></div>");
         }
         $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions).data("kendoGrid");
+        customDeleteToolbar();
       };
       /*===============================================================================================================*/
       /*CUSTOM TOOLBAR DELETE BUTTON*/
@@ -241,7 +263,7 @@ angularApp.directive('usersGrid', function ($http, $location, $timeout, Api) {
             online = this.value();
             localStorage["kendo-grid-online"] = online;
             $scope.grid.dataSource.online(online);
-            if(online){
+            if (online) {
               $scope.grid.dataSource.fetch();
             }
           }
