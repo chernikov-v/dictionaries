@@ -12,15 +12,21 @@
 .k-pager-nav span{
     margin: 6px;
 }
+/*============================================List View====================================================*/
 .list-view {
     float: left;
     position: relative;
+    height: 250px;
     width: 49.8%;
     min-width: 20%;
     box-sizing: border-box;
     border-top: 0;
 }
+/*.k-edit-item input{
+
+}*/
 #listView{
     display: block;
     min-width: 1000px;
 }
+/*=========================================================================================================*/
