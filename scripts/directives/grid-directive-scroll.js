@@ -10,26 +10,33 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
     },
     link: function ($scope, $element, $attrs, $controller) {
 
-    /* "filterable": {
-        "multi": true,
-          "dataSource": {
-          "transport": {
-            "read": "http://mvc.gloria-jeans-portal.com/api/User/list"
-          },
-          "schema":{
-            "data":"data"
-          }
-        }
-      }*/
 
-
-      $http.get(Api.urls.gridConfig).success(function (response) {
-        //$http.get("static-data/server_columns").success(function (response) {
+      //$http.get(Api.urls.gridConfig).success(function (response) {
+        $http.get("static-data/server_columns").success(function (response) {
 
         //console.log(response);
         $scope.columns = response.columns;
         $scope.fieldsSchema = response.schema;
         $scope.columns.push(editColumn);
+
+        for(var i = 0; i < $scope.columns.length; i++){
+
+          if($scope.columns[i].field === "createdDate"){
+            $scope.columns[i]
+          }
+
+          if($scope.columns[i].field === "password"){
+            $scope.columns[i].template = "<input type='password' disabled='true' value='#=password#'/>";
+            $scope.columns[i].editor = function(container, options) {
+              var input = $("<input type='password'/>");
+              input.attr("name", options.field);
+              input.appendTo(container);
+
+            }
+          }
+        }
+        console.log($scope.columns);
+
 
           $scope.gridOptions = {
             dataSource: new kendo.data.DataSource({
@@ -57,13 +64,10 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
               mode: "row",
               operators: {
                 string: {
-                  startswith: "Starts with",
-                  eq: "Is equal to",
-                  neq: "Is not equal to",
-                  contains: "Contains",
-                  doesnotcantain: "Does not contain",
-                  endswith: "Ends With",
-                  customOperator: "Custom Operator"
+                  contains: "Contains"
+                },
+                date: {
+                  eq: "Is equal to"
                 }
               }
             },
@@ -148,7 +152,18 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
           if(typeof data.filter != 'undefined'){
             console.log('result ', filterParser(data.filter));
             data.filter = filterParser(options.data.filter);
+
+            for(var i = 0; i < data.filter.length; i++){
+              if (data.filter[i].field == "createdDate"){
+                var date = kendo.parseDate(data.filter[i].value);
+                var parsedDate = kendo.toString(new Date(date), "yyyy-MM-dd");
+                data.filter[i].value = parsedDate;
+              }
+            }
+
           }
+
+
 
           $.ajax({
             method: "POST",
