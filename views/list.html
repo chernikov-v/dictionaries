@@ -1,7 +1,7 @@
 
-
 <div list>
-    <input id="filter"/>
+    <div id="filter"></div>
+    <!--<input id="filter"/>-->
     <a class="k-button k-button-icontext" id="find" href="#"><span class="k-icon"></span>Search</a>
     <a class="k-button k-button-icontext" id="clearFind" href="#"><span class="k-icon"></span>Clear</a>
     <br/>
@@ -9,52 +9,3 @@
     <div id="listView"></div>
     <div id="pager" class="k-pager-wrap"></div>
 </div>
-
-
-
-<script type="text/x-kendo-tmpl" id="template">
-        <div class="list-view k-widget">
-            <div class="edit-buttons">
-                <a class="k-button k-edit-button" href="\\#"><span class="k-icon k-edit"></span></a>
-                <a class="k-button k-delete-button" href="\\#"><span class="k-icon k-delete"></span></a>
-            </div>
-            <dl>
-                <dt>Product Name</dt>
-                <dd>#:ProductName#</dd>
-                <dt>Unit Price</dt>
-                <dd>#:kendo.toString(UnitPrice, "c")#</dd>
-                <dt>Units In Stock</dt>
-                <dd>#:UnitsInStock#</dd>
-                <dt>Discontinued</dt>
-                <dd>#:Discontinued#</dd>
-            </dl>
-        </div>
-    </script>
-
-<script type="text/x-kendo-tmpl" id="editTemplate">
-<div class="list-view k-widget">
-    <div class="edit-buttons">
-        <a class="k-button k-update-button" href="\\#"><span class="k-icon k-update"></span></a>
-        <a class="k-button k-cancel-button" href="\\#"><span class="k-icon k-cancel"></span></a>
-    </div>
-    <dl>
-        <dt>Product Name</dt>
-        <dd>
-            <input type="text" class="k-textbox" data-bind="value:ProductName" name="ProductName" required="required" validationMessage="required" />
-            <span data-for="ProductName" class="k-invalid-msg"></span>
-        </dd>
-        <dt>Unit Price</dt>
-        <dd>
-            <input type="text" data-bind="value:UnitPrice" data-role="numerictextbox" data-type="number" name="UnitPrice" required="required" min="1" validationMessage="required" />
-            <span data-for="UnitPrice" class="k-invalid-msg"></span>
-        </dd>
-        <dt>Units In Stock</dt>
-        <dd>
-            <input type="text" data-bind="value:UnitsInStock" data-role="numerictextbox" name="UnitsInStock" required="required" data-type="number" min="0" validationMessage="required" />
-            <span data-for="UnitsInStock" class="k-invalid-msg"></span>
-        </dd>
-        <dt>Discontinued</dt>
-        <dd><input type="checkbox" name="Discontinued" data-bind="checked:Discontinued"></dd>
-    </dl>
-</div>
-</script>
