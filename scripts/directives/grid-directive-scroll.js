@@ -12,22 +12,70 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
 
 
       //$http.get(Api.urls.gridConfig).success(function (response) {
-        $http.get("static-data/server_columns").success(function (response) {
+      $http.get("https://gist.githubusercontent.com/chernikov-v/d6edbf938e23218d75c4/raw/111798bc9b5b2b134cc15d7c03a765d7d44e78de/grid_config.json").success(function (response) {
 
         //console.log(response);
         $scope.columns = response.columns;
         $scope.fieldsSchema = response.schema;
         $scope.columns.push(editColumn);
 
-        for(var i = 0; i < $scope.columns.length; i++){
+        for (var i = 0; i < $scope.columns.length; i++) {
 
-          if($scope.columns[i].field === "createdDate"){
-            $scope.columns[i]
+          if ($scope.columns[i].field === "createdDate") {
+            $scope.columns[i].filterable = {
+              cell: {
+                template: function (data) {
+
+                  var _this = this;
+
+                  window.myDatePicker_change = function (e) {
+                    var choosenDate = e.sender.value();
+                    var date2 = new Date(choosenDate);
+                    date2.setHours(23);
+                    date2.setMinutes(59);
+                    date2.setSeconds(59);
+                    console.log(_this);
+
+
+                    var filter = {
+                      logic: "and",
+                      filters: [
+                        {
+                          field: "createdDate",
+                          operator: "gte",
+                          value: kendo.toString(new Date(choosenDate), "yyyy-MM-dd HH:mm:ss")
+                        }, {
+                          field: "createdDate",
+                          operator: "lte",
+                          value: kendo.toString(new Date(date2), "yyyy-MM-dd HH:mm:ss")
+                        }
+                      ]
+                    };
+
+                    var filters = typeof $scope.grid.dataSource.filter() != 'undefined' ? $scope.grid.dataSource.filter().filters : [];
+                    for (var i = 0; i < filters.length; i++) {
+                      if( typeof filters[i].filters != 'undefined' &&  filters[i].filters[0].field == "createdDate") {
+                        filter[i].splice( i, 1 );
+                      }
+                    }
+                    filters.push(filter);
+                    $scope.grid.dataSource.filter(filters);
+                    console.log("grid - ", $scope.grid.dataSource.filter());
+
+                  };
+
+                  data.element.replaceWith('<div id="myDatePicker"><input data-role="datepicker" data-change="myDatePicker_change"/></div>');
+                  kendo.bind($('#myDatePicker'));
+
+                },
+                showOperators: false
+              }
+            }
           }
 
-          if($scope.columns[i].field === "password"){
+          if ($scope.columns[i].field === "password") {
             $scope.columns[i].template = "<input type='password' disabled='true' value='#=password#'/>";
-            $scope.columns[i].editor = function(container, options) {
+            $scope.columns[i].editor = function (container, options) {
               var input = $("<input type='password'/>");
               input.attr("name", options.field);
               input.appendTo(container);
@@ -38,71 +86,71 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
         console.log($scope.columns);
 
 
-          $scope.gridOptions = {
-            dataSource: new kendo.data.DataSource({
-              offlineStorage: "offline-kendo",
-              transport: gridTransport,
-              schema: {
-                //data: "data",
-                total: "total",
-                model: {
-                  id: "id",
-                  fields : $scope.fieldsSchema
-                }
-              },
-              pageSize: 10,
-              serverPaging: true,
-              serverFiltering: true,
-              serverSorting: true
-            }),
-            height: 400,
-            scrollable: {
-              virtual: true
-            },
-            filterable: {
-              extra: true,
-              mode: "row",
-              operators: {
-                string: {
-                  contains: "Contains"
-                },
-                date: {
-                  eq: "Is equal to"
-                }
+        $scope.gridOptions = {
+          dataSource: new kendo.data.DataSource({
+            offlineStorage: "offline-kendo",
+            transport: gridTransport,
+            schema: {
+              //data: "data",
+              total: "total",
+              model: {
+                id: "id",
+                fields: $scope.fieldsSchema
               }
             },
-            sortable: {
-              mode: "multiple",
-              allowUnsort: true
-            },
-            allowCopy: true,
-            selectable: "multiple row",
-            autoBind: true,
-            pageable: {
-              pageSize: 7,
-              previousNext: false,
-              numeric: false,
+            pageSize: 10,
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true
+          }),
+          height: 400,
+          scrollable: {
+            virtual: true
           },
-            columnResizeHandleWidth: 5,
-            navigatable: true,
-            editable: {
-              confirmation: false
-            },
-            resizable: true,
-            columns: $scope.columns,
-            reorderable: true,
-            columnReorder: gridEvents.columnReorder,
-            edit: gridEvents.edit,
-            autoSync: true,
-            toolbar: ["create", "save", "cancel", "destroy", "excel"]
-          };
+          filterable: {
+            extra: true,
+            mode: "row",
+            operators: {
+              string: {
+                contains: "Contains"
+              },
+              date: {
+                eq: "Is equal to"
+              }
+            }
+          },
+          sortable: {
+            mode: "multiple",
+            allowUnsort: true
+          },
+          allowCopy: true,
+          selectable: "multiple row",
+          autoBind: true,
+          pageable: {
+            pageSize: 7,
+            previousNext: false,
+            numeric: false,
+          },
+          columnResizeHandleWidth: 5,
+          navigatable: true,
+          editable: {
+            confirmation: false
+          },
+          resizable: true,
+          columns: $scope.columns,
+          reorderable: true,
+          columnReorder: gridEvents.columnReorder,
+          edit: gridEvents.edit,
+          autoSync: true,
+          toolbar: ["create", "save", "cancel", "destroy", "excel"]
+        };
 
-          createGrid();
-          createOnlineSwitcher();
-          //subscribeBrowserOnline();
-          customDeleteToolbar();
-          createLanguageSwither();
-        });
+        createGrid();
+        createOnlineSwitcher();
+        //subscribeBrowserOnline();
+        customDeleteToolbar();
+        createLanguageSwither();
+      });
 
 
       /*===============================================================================================================*/
@@ -135,10 +183,10 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
       };
       var filterParser = function (obj) {
         var tmp = [];
-        if(typeof obj.filters == 'undefined'){
+        if (typeof obj.filters == 'undefined') {
           tmp.push(obj)
-        }else{
-          for(var j = 0; j < obj.filters.length; j++){
+        } else {
+          for (var j = 0; j < obj.filters.length; j++) {
             tmp = tmp.concat(filterParser(obj.filters[j]));
           }
         }
@@ -146,24 +194,23 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
       };
       var gridTransport = {
         create: create_update,
+        update: create_update,
         read: function (options) {
           var data = options.data;
 
-          if(typeof data.filter != 'undefined'){
+          if (typeof data.filter != 'undefined') {
             console.log('result ', filterParser(data.filter));
             data.filter = filterParser(options.data.filter);
 
-            for(var i = 0; i < data.filter.length; i++){
-              if (data.filter[i].field == "createdDate"){
-                var date = kendo.parseDate(data.filter[i].value);
-                var parsedDate = kendo.toString(new Date(date), "yyyy-MM-dd");
-                data.filter[i].value = parsedDate;
-              }
-            }
+            /* for(var i = 0; i < data.filter.length; i++){
+             if (data.filter[i].field == "createdDate"){
+             var date = kendo.parseDate(data.filter[i].value);
+             var parsedDate = kendo.toString(new Date(date), "yyyy-MM-dd");
+             data.filter[i].value = parsedDate;
+             }
+             }*/
 
           }
-
-
 
           $.ajax({
             method: "POST",
@@ -180,7 +227,6 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
             }
           });
         },
-        update: create_update,
         destroy: function (options) {
           $.ajax({
             url: Api.urls.deleteItem(options.data._id),
@@ -189,14 +235,14 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
             }
           });
         }/*,
-        parameterMap: function (data, type) {
-          if (type == "read") {
-            return {
-              take: data.take,
-              skip: data.skip
-            }
-          }
-      }*/
+         parameterMap: function (data, type) {
+         if (type == "read") {
+         return {
+         take: data.take,
+         skip: data.skip
+         }
+         }
+         }*/
       };
       /*===============================================================================================================*/
       /*ADDITIONAL COLUMN OBJ*/
@@ -274,14 +320,14 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
       /*===============================================================================================================*/
       /*OFFLINE MODE*/
       /*===============================================================================================================*/
-      var subscribeBrowserOnline = function(){
+      var subscribeBrowserOnline = function () {
         $scope.grid.dataSource.online(navigator.onLine);
-        $(window).on("offline", function() {
+        $(window).on("offline", function () {
           $scope.grid.dataSource.online(false);
           console.log("navigator online - ", navigator.onLine);
           //alert("OFFLINE");
         });
-        $(window).on("online", function() {
+        $(window).on("online", function () {
           $scope.grid.dataSource.online(true);
           //alert("ONLINE");
         });
@@ -302,7 +348,7 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
             online = this.value();
             localStorage["kendo-grid-online"] = online;
             $scope.gridOptions.dataSource.online(online);
-            if(online){
+            if (online) {
               $scope.grid.dataSource.fetch();
             }
           }
