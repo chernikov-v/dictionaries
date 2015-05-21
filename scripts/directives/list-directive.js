@@ -131,9 +131,29 @@ angularApp.directive('list', function ($http, Api, listTemplateFactory) {
         for(var i = 0; i < $scope.columns.length; i++){
           if(typeof $scope.columns[i].filterable != 'undefined'){
             var filterId = "filter" + $scope.columns[i].field;
-            table.append('<tr><td style="width: 200px"><lable>Filter by '+ $scope.columns[i].title +'</lable></td><td><input id="'+ filterId +'"/></td></tr>');
+            var _field = $scope.columns[i].field;
+            table.append('<tr><td style="width: 200px"><lable>Filter by '+ $scope.columns[i].title +'</lable></td><td><input id="'+ filterId +'"/></td><td> <button data-field="'+ _field +'" class="sortAsc">Sort Asc</button> </td><td> <button data-field="'+ _field +'" class="sortDesc">Sort Desc</button> </td></tr>');
           }
         }
+
+        /*sorting*/
+        $(".sortAsc").click(function(e){
+          console.log("asc - ", $(e.target).data("field"));
+          $scope.listView.dataSource.sort({ dir: "asc", field: $(e.target).data("field")})
+        }.bind(this));
+        $(".sortDesc").click(function(e){
+          console.log("desc - ",$(e.target).data("field"));
+
+          $scope.listView.dataSource.sort({ dir: "desc", field: $(e.target).data("field")})
+        });
+
+
+
+        /*reset sorting*/
+        $("#resetSorting").click(function(e){
+          $scope.listView.dataSource.sort({});
+          e.preventDefault();
+        });
 
         /*Find button*/
         $('#find').click(function(e){
