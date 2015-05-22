@@ -45,7 +45,7 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
         controller: 'ViewGridCtrlsCtrl'
       })
       .when('/controls-form', {
-        template: '<form-directive-user form="form"></form-directive-user>',
+        template: '<form-directive-controls form="form"></form-directive-controls>',
         controller: 'ViewControlsCtrl'
       })
 

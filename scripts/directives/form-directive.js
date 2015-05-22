@@ -41,4 +41,27 @@ angularApp.directive('formDirective', function () {
       form:'='
     }
   };
+}).directive('formDirectiveControls', function (Api, $rootScope, $location) {
+  return {
+    controller: function($scope){
+      $scope.submit = function(){
+
+        console.log(Api.send($scope.form).then(function(success){
+          $rootScope.hideForm = true;
+          console.log("success", $rootScope.hideForm);
+
+        }));
+        $location.path('/controls-grid').search({});
+      };
+
+      $scope.cancel = function(){
+        alert('Form canceled..');
+      };
+    },
+    templateUrl: './views/directive-templates/form/form.html',
+    restrict: 'E',
+    scope: {
+      form:'='
+    }
+  };
 });
