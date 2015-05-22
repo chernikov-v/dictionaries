@@ -1,7 +1,6 @@
 'use strict';
 
 var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','ui.bootstrap','ngResource', 'mgcrea.ngStrap', 'ngRoute', 'DWand.nw-fileDialog'])
-//var angularApp = angular.module('angularjsFormBuilderApp', ['ui.bootstrap', '$strap.directives','ngRoute'])
 
 .config(function ($routeProvider, $datepickerProvider) {
 
@@ -39,7 +38,21 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
         .when('/list', {
           templateUrl: 'views/list.html'
         })
-      .when('/hierarchy', {
+
+      /*controls*/
+      .when('/controls-grid', {
+        templateUrl: 'views/grid-controls.html',
+        controller: 'ViewGridCtrlsCtrl'
+      })
+      .when('/controls-form', {
+        template: '<form-directive-user form="form"></form-directive-user>',
+        controller: 'ViewControlsCtrl'
+      })
+
+      /*test grids*/
+
+
+        .when('/hierarchy', {
           template: '<hierarchy-grid></hierarchy-grid>'
         })
         .when('/aggregates', {

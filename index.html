@@ -43,6 +43,7 @@
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Demo
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu">
+                                <li><a href="#/controls-grid">CONTROLS</a></li>
                                 <li><a href="#/hierarchy">Hierarchy</a></li>
                                 <li><a href="#/aggregates">Aggregates</a></li>
                                 <li><a href="#/frozen">Frozen Columns</a></li>
@@ -55,6 +56,7 @@
                             </ul>
                         </div>
                     </li>
+                    <li ng-class="{active: ($location.path() == '/forms/create') }"><a href="#/forms/create">Create Form</a></li>
                 </ul>
                 <h3 class="muted">Form Builder</h3>
             </div>
@@ -87,25 +89,32 @@
         <script src="bower_components/angular-strap/dist/angular-strap.min.js"></script>
         <script src="bower_components/angular-strap/dist/angular-strap.tpl.min.js"></script>
         <script src="lib/nw-fileDialog.js"></script>
-
+        <script src="lib/ui-bootstrap-tpls-0.4.0.min.js"></script>
         <!--<script src="lib/angular-strap.min.js"></script>-->
 
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/create.js"></script>
         <script src="scripts/controllers/view.js"></script>
+
         <script src="scripts/controllers/view_user.js"></script>
         <script src="scripts/controllers/view_grid.js"></script>
+        <script src="scripts/controllers/view_grid_controls.js"></script>
+        <script src="scripts/controllers/view_controls.js"></script>
+
         <script src="scripts/controllers/header.js"></script>
         <script src="scripts/services/api.js"></script>
         <script src="scripts/services/form-service.js"></script>
         <script src="scripts/services/listTemplateFactory.js"></script>
         <script src="scripts/directives/form-directive.js"></script>
         <script src="scripts/directives/field-directive.js"></script>
+
         <script src="scripts/directives/grid-directive.js"></script>
         <script src="scripts/directives/grid-directive-scroll.js"></script>
+        <script src="scripts/directives/grid-directive-controls.js"></script>
         <script src="scripts/directives/list-directive.js"></script>
-        <script src="lib/ui-bootstrap-tpls-0.4.0.min.js"></script>
+
+
 
         <script src="demo/dirs/hierarchy.js"></script>
         <script src="demo/dirs/aggregates.js"></script>
