@@ -11,8 +11,8 @@ angularApp.directive('usersGridControls', function ($http, $route, $location, $t
     link: function ($scope, $element, $attrs, $controller) {
 
       //$http.get(Api.urls.gridConfig).success(function (response) {
-      $http.get("https://gist.githubusercontent.com/chernikov-v/d6edbf938e23218d75c4/raw/c924f9be276bd9c7fd6493fc57b139dfdea36a5f/api_form_data.json'").success(function (response) {
-      //$http.get("http://mvc.gloria-jeans-portal.com/api/templates/templatecontrols/b259b51b-fcda-4cdd-8542-552d8af8ba97").success(function (response) {
+      //$http.get("https://gist.githubusercontent.com/chernikov-v/d6edbf938e23218d75c4/raw/c924f9be276bd9c7fd6493fc57b139dfdea36a5f/api_form_data.json'").success(function (response) {
+      $http.get("http://mvc.gloria-jeans-portal.com/api/templates/templatecontrols/b259b51b-fcda-4cdd-8542-552d8af8ba97").success(function (response) {
 
         //$scope.columns = response.columns;
         $scope.columns = [
