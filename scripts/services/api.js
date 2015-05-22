@@ -17,9 +17,11 @@ angularApp.factory('Api', function ($resource, $http, $q) {
    *
    * */
 
+
   var mainUrl = 'http://mvc.gloria-jeans-portal.com/api/';
 
-  var formUrl = mainUrl + "forms/";
+  //var formUrl = mainUrl + "forms/";
+  var formUrl = mainUrl + "User/";
   var gridUrl = mainUrl + "User/";
 
 
@@ -74,6 +76,74 @@ angularApp.factory('Api', function ($resource, $http, $q) {
     });
   };
 
+  var getControl = function (_data, id) {
+
+
+    //var api = $resource('http://mvc.gloria-jeans-portal.com/api/template/view/' + id, {}, {
+    var api = $resource('https://gist.githubusercontent.com/chernikov-v/d6edbf938e23218d75c4/raw/c924f9be276bd9c7fd6493fc57b139dfdea36a5f/api_form_data.json', {}, {
+      get: {
+        method: 'GET',
+        isArray: true
+      }
+
+    });
+
+    api.get(function (response) {
+
+      var obj = {};
+
+
+      for( var i = 0; i < response.length; i++){
+        if(response[i].id == id){
+          obj = response[i];
+        }
+      }
+      var properties = obj.properties;
+
+      $http.get("https://gist.githubusercontent.com/chernikov-v/d6edbf938e23218d75c4/raw/cc627db3dfc4d3f7a246ab7a6e2350601699952c/api-form.json")
+        .success(function (res) {
+
+          var form = res[obj.id];
+          var fields = form.form_fields;
+
+          console.log(fields);
+          console.log(properties);
+
+          for(var i = 0; i < fields.length; i++){
+
+
+
+            var field = properties[fields[i].field_name];
+            console.log(field);
+
+            if(field != null && typeof field.value != 'undefined'){
+
+              fields[i].field_value = field.value;
+              for(var j = 0;j < field.options.length; j++){
+                fields[i].field_options[j] = {
+                  option_id : j,
+                  option_title : field.options[j],
+                  option_value : j
+                }
+
+
+              }
+            }else{
+              fields[i].field_value = field;
+            }
+            //console.log(form[i].field_value)
+          }
+          console.log('~~~~~~', form);
+          for (var i in form) {
+            _data[i] = form[i];
+          }
+
+
+        });
+    });
+  };
+
+
   var jqPost = function (_data, id) {
     return $.post(
       apiURLs.post,
@@ -84,6 +154,7 @@ angularApp.factory('Api', function ($resource, $http, $q) {
 
   return {
     get: get,
+    getControl: getControl,
     //send: send
     send: jqPost,
     urls: apiURLs
