@@ -111,22 +111,21 @@ angularApp.factory('Api', function ($resource, $http, $q) {
 
           for(var i = 0; i < fields.length; i++){
 
-
-
             var field = properties[fields[i].field_name];
             console.log(field);
 
             if(field != null && typeof field.value != 'undefined'){
 
-              fields[i].field_value = field.value;
               for(var j = 0;j < field.options.length; j++){
+
                 fields[i].field_options[j] = {
                   option_id : j,
                   option_title : field.options[j],
                   option_value : j
-                }
-
-
+                };
+                if(field.value == fields[i].field_options[j].option_title){
+                  fields[i].field_value = fields[i].field_options[j].option_id;
+                };
               }
             }else{
               fields[i].field_value = field;
