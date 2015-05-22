@@ -148,7 +148,6 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
         createGrid();
         createOnlineSwitcher();
         //subscribeBrowserOnline();
-        customDeleteToolbar();
         createLanguageSwither();
       });
 
@@ -274,6 +273,7 @@ angularApp.directive('usersGridScroll', function ($http, $location, $timeout, Ap
           $element.html("<div id='myGrid'></div>");
         }
         $scope.grid = $('#myGrid').kendoGrid($scope.gridOptions).data("kendoGrid");
+        customDeleteToolbar();
       };
       /*===============================================================================================================*/
       /*CUSTOM TOOLBAR DELETE BUTTON*/
