@@ -37,19 +37,20 @@ angularApp.directive('fieldDirective', function($http, $compile) {
       if(scope.field.field_type == 'date'){
         scope.field.field_value = new Date(scope.field.field_value);
       }
-      console.log(scope.field);
         $http.get(templateUrl).success(function(data) {
             element.html(data);
             $compile(element.contents())(scope);
             element.show();
+
+            scope.field.field_name == 'controlType'?scope.onFieldRender():'';
         });
     };
-
     return {
         template: '<div>{{field}}</div>',
         restrict: 'E',
         scope: {
-            field: '='
+            field: '=',
+            onFieldRender: '='
         },
         link: linker
     };

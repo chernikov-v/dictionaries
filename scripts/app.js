@@ -1,6 +1,6 @@
 'use strict';
 
-var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','ui.bootstrap','ngResource', 'mgcrea.ngStrap', 'ngRoute', 'DWand.nw-fileDialog'])
+var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','ui.bootstrap','ngResource', 'mgcrea.ngStrap', 'ngRoute', 'DWand.nw-fileDialog','ngUnderscore'])
 
 .config(function ($routeProvider, $datepickerProvider) {
 
@@ -39,19 +39,42 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
           templateUrl: 'views/list.html'
         })
 
-      /*controls*/
-      .when('/controls-grid', {
-        templateUrl: 'views/grid-controls.html',
-        controller: 'ViewGridCtrlsCtrl'
+      /*template*/
+      .when('/template-grid', {
+        templateUrl: 'views/template-grid.html',
+        controller: 'ViewGridTemplateCtrl'
       })
-      .when('/controls-form', {
-        template: '<form-directive-controls form="form"></form-directive-controls>',
-        controller: 'ViewControlsCtrl'
+      .when('/template-form', {
+        template: '<form-directive-template form="form"></form-directive-template>',
+        controller: 'ViewTemplateCtrl'
+      })
+
+      /*dictionary*/
+      .when('/dictionary-grid', {
+        templateUrl: 'views/dictionary-grid.html',
+        controller: 'ViewGridTemplateCtrl'
+      })
+      .when('/dictionary-form', {
+        template: '<form-directive-dictionary form="form"></form-directive-dictionary>',
+        controller: function($rootScope, $routeParams,$scope, Api){
+          $scope.form = {};
+          $rootScope.hideForm = true;
+
+          if($routeParams.id){
+            console.log($routeParams);
+            Api.getDictionary($scope.form, $routeParams.id);
+
+          }else if($routeParams.add){
+            console.log($routeParams);
+            Api.addDictionary($scope.form);
+
+          }
+        }
+        //controller: 'ViewTemplateCtrl'
+        //controller: 'ViewDictionaryCtrl'
       })
 
       /*test grids*/
-
-
         .when('/hierarchy', {
           template: '<hierarchy-grid></hierarchy-grid>'
         })

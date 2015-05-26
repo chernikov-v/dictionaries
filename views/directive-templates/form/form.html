@@ -3,13 +3,13 @@
 <div ng-if="hideForm"> Last form ID: {{form.data_id}}</div>
 <div ng-show="!hideForm">
     <div class="field row">
-        <div class="span2">Form ID:</div>
+        <!--<div class="span2">Form ID:</div>-->
         <!--<div class="span4">{{ form.form_id }}</div>-->
-        <div class="span4">{{ form.data_id }}</div>
+        <!--<div class="span4">{{ form.data_id }}</div>-->
     </div>
     <form name="myForm" id="myForm">
         <div ng-repeat="field in form.form_fields">
-            <field-directive field="field">
+            <field-directive on-field-render="controlType" field="field">
 
             </field-directive>
         </div>
@@ -19,7 +19,7 @@
     <div class="form-actions">
         <p class="text-center">
             <button class="btn btn-success right" type="button" ng-disabled="!myForm.$valid" ng-click="submit()"><i class="icon-edit icon-white"></i> Submit Form</button>
-            <!--<button class="btn btn-danger right" type="button" ng-click="cancel()"><i class="icon-remove icon-white"></i> Cancel</button>-->
+            <button class="btn btn-danger right" type="button" ng-click="cancel()"><i class="icon-remove icon-white"></i> Cancel</button>
         </p>
     </div>
 </div>
