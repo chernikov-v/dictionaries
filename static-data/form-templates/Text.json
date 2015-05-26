@@ -1,0 +1,81 @@
+{
+  "form_id": "",
+  "form_name": "",
+  "form_fields": [
+    {
+      "field_id": 1,
+      "field_name": "fieldName",
+      "field_title": "Field Name",
+      "field_type": "textfield",
+      "field_value": "",
+      "field_required": true,
+      "field_disabled": false
+    },
+    {
+      "field_id": 2,
+      "field_name": "fieldLabel",
+      "field_title": "Field Label",
+      "field_type": "textfield",
+      "field_value": "",
+      "field_required": true,
+      "field_disabled": false
+    },
+    {
+      "field_id": 3,
+      "field_name": "dataType",
+      "field_title": "Data Type",
+      "field_type": "dropdown",
+      "field_value": "",
+      "field_required": true,
+      "field_disabled": false,
+      "field_options": []
+    },
+    {
+      "field_id": 4,
+      "field_name": "maxLength",
+      "field_title": "Max Length",
+      "field_type": "textfield",
+      "field_value": "",
+      "field_required": true,
+      "field_disabled": false
+    },
+    {
+      "field_id": 5,
+      "field_name": "controlType",
+      "field_title": "Control Type",
+      "field_type": "dropdown",
+      "field_value": "",
+      "field_required": true,
+      "field_disabled": false,
+      "field_options": []
+    },
+    {
+      "field_id": 6,
+      "field_name": "required",
+      "field_title": "Required",
+      "field_type": "checkbox",
+      "field_value": "1",
+      "field_required": false,
+      "field_disabled": false
+    },
+    {
+      "field_id": 7,
+      "field_name": "defaultValue",
+      "field_title": "Default Value",
+      "field_type": "textfield",
+      "field_value": "",
+      "field_required": false,
+      "field_disabled": false
+    },
+    {
+      "field_id": 8,
+      "field_name": "rooltip",
+      "field_title": "Tooltip",
+      "field_type": "textarea",
+      "field_value": "",
+      "field_required": false,
+      "field_disabled": false
+    }
+  ],
+  "submitted": false
+}
