@@ -3,16 +3,16 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
   var _ = underscore;
 
 
-  function fieldType(type){
+  function fieldType(type) {
 
     var innerType = "";
 
-   /* 'email',
-    'password',
-    'radio'
-    'hidden'*/
+    /* 'email',
+     'password',
+     'radio'
+     'hidden'*/
 
-    switch(type){
+    switch (type) {
       case 'Calendar':
         innerType = 'date';
         break;
@@ -40,7 +40,8 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
 
     return innerType;
   }
-  function createForm(config){
+
+  function createForm(config) {
 
     var form = {
       form_id: config.id,
@@ -49,10 +50,10 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
       form_fields: []
     };
 
-     var fields = [];
+    var fields = [];
 
-    for(var i = 0; i < config.form.length; i++){
-            var configField = _.where(config.fields, { fieldId: config.form[i] })[0];
+    for (var i = 0; i < config.form.length; i++) {
+      var configField = _.where(config.fields, {fieldId: config.form[i]})[0];
       fields.push({
         "field_id": configField.fieldId,
         "field_name": configField.fieldName,
@@ -64,7 +65,7 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
         "field_options": []
         /*
          "tooltip": "[Data dictionary Control type]"
-        dataType: 'String'
+         dataType: 'String'
          maxLength: 200,
          validation: null || 'Required',
          */
@@ -74,38 +75,40 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     return form;
 
   }
-  function cloneData(objTo, objectFrom){
+
+  function cloneData(objTo, objectFrom) {
     for (var i in objectFrom) {
       objTo[i] = objectFrom[i];
     }
   }
-  function fulfillForm(outerForm, data){
-    $http.get('http://mvc.gloria-jeans-portal.com/api/forms/get/'+ data.controlType.value)
+
+  function fulfillForm(outerForm, data) {
+    $http.get('http://mvc.gloria-jeans-portal.com/api/forms/get/' + data.controlType.value)
       .success(function (res) {
 
         var form = createForm(res);
         //var properties = data.properties;
         var fields = form.form_fields;
 
-        for(var i = 0; i < fields.length; i++){
+        for (var i = 0; i < fields.length; i++) {
           var name = fields[i].field_name.split('.');
-          var field = name.length == 1? data[name[0]]: data[name[0]][name[1]];
+          var field = name.length == 1 ? data[name[0]] : data[name[0]][name[1]];
           //console.log(name,field);
-          if(field != null && typeof field.value != 'undefined'){
+          if (field != null && typeof field.value != 'undefined') {
 
-            for(var j = 0;j < field.options.length; j++){
+            for (var j = 0; j < field.options.length; j++) {
 
               fields[i].field_options[j] = {
-                option_id : j,
-                option_title : field.options[j],
-                option_value : j
+                option_id: j,
+                option_title: field.options[j],
+                option_value: j
               };
-              if(field.value == fields[i].field_options[j].option_title){
+              if (field.value == fields[i].field_options[j].option_title) {
                 //fields[i].field_value = fields[i].field_options[j].option_title;
                 fields[i].field_value = fields[i].field_options[j].option_id;
               }
             }
-          }else{
+          } else {
             fields[i].field_value = field;
           }
         }
@@ -116,27 +119,28 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
 
       });
   }
-  function formToObject(form, id){
+
+  function formToObject(form, id) {
 
     var fields = form.form_fields;
-    var controlName = _.where(fields,{ field_name: 'controlName'})[0].field_value;
-    var controlTypeField = _.where(fields,{ field_name: 'controlType'})[0];
-    var controlType = controlTypeField.field_options.length?_.where(controlTypeField.field_options, { option_id: +controlTypeField.field_value })[0].option_title:controlTypeField.field_value
+    var controlName = _.where(fields, {field_name: 'controlName'})[0].field_value;
+    var controlTypeField = _.where(fields, {field_name: 'controlType'})[0];
+    var controlType = controlTypeField.field_options.length ? _.where(controlTypeField.field_options, {option_id: +controlTypeField.field_value})[0].option_title : controlTypeField.field_value
     var data = {
       id: id || form.form_id,
       controlName: controlName,
-      controlType:controlType,
+      controlType: controlType,
       properties: {}
     };
 
     var properties = {};
 
-    for(var i = 0; i < fields.length; i++){
+    for (var i = 0; i < fields.length; i++) {
       var name = fields[i].field_name.split('.');
-      if(name.length == 1){
-        properties[name[0]] = fields[i].field_options.length?_.where(fields[i].field_options, { option_id: +fields[i].field_value })[0].option_title:fields[i].field_value;
-      }else{
-        properties[name[1]] = fields[i].field_options.length?_.where(fields[i].field_options, { option_id: +fields[i].field_value })[0].option_title:fields[i].field_value;
+      if (name.length == 1) {
+        properties[name[0]] = fields[i].field_options.length ? _.where(fields[i].field_options, {option_id: +fields[i].field_value})[0].option_title : fields[i].field_value;
+      } else {
+        properties[name[1]] = fields[i].field_options.length ? _.where(fields[i].field_options, {option_id: +fields[i].field_value})[0].option_title : fields[i].field_value;
       }
     }
     data.properties = properties;
@@ -144,12 +148,13 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     return data;
   }
 
-/*===========================================================================================================================================*/
-/*===========================================================================================================================================*/
+  /*===========================================================================================================================================*/
+  /*===========================================================================================================================================*/
 
   var mainUrl = 'http://mvc.gloria-jeans-portal.com/api/';
-  //var formUrl = mainUrl + "forms/";
-  var formUrl = mainUrl + "User/";
+
+  var formUrl = mainUrl + "forms/";
+  //var formUrl = mainUrl + "User/";
   var gridUrl = mainUrl + "User/";
 
   var apiURLs = {
@@ -175,9 +180,19 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     listview: mainUrl + "/user/listview",
     datadictionary: mainUrl + 'datadictionary',
     dictionaryAdd: mainUrl + 'datadictionary/add',
-    dictionaryEdit: function(id){
+    dictionaryEdit: function (id) {
       return mainUrl + 'datadictionary/edit/' + id;
-    }
+    },
+    systemcontrolsproperties: function (controlType) {
+      return mainUrl + 'systemcontrolsproperties/get/' + controlType;
+    },
+    templateView: function (id) {
+      return mainUrl + 'template/view/' + id
+    },
+    dataDictionaryGrid: formUrl+'get/DataDictionaryGrid',
+    datadictionaryDelete: function(id){
+    return mainUrl + 'datadictionary/delete/' + id;
+  }
 
   };
   /*===========================================================================================================================================*/
@@ -204,15 +219,14 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     });
   };
   var getControl = function (_data, id) {
-    //var api = $resource('http://mvc.gloria-jeans-portal.com/api/template/view/' + id, {}, {
-    var api = $resource('https://gist.githubusercontent.com/chernikov-v/d6edbf938e23218d75c4/raw/c924f9be276bd9c7fd6493fc57b139dfdea36a5f/api_form_data.json', {}, {
-      get:{
+    var api = $resource(apiURLs.templateView(id), {}, {
+      get: {
         isArray: true
       }
     }).get(function (response) {
       var obj = response;
-      for( var i = 0; i < response.length; i++){
-        if(response[i].id == id){
+      for (var i = 0; i < response.length; i++) {
+        if (response[i].id == id) {
           obj = response[i];
         }
       }
@@ -221,14 +235,14 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     });
   };
   var getDictionary = function (_data, id) {
-    var api = $resource('http://mvc.gloria-jeans-portal.com/api/datadictionary/edit/'+id).get(function (response) {
+    var api = $resource(apiURLs.dictionaryEdit(id)).get(function (response) {
       fulfillForm(_data, response);
     });
 
   };
   var addDictionary = function (_data, controlType) {
 
-    var api = $resource('http://mvc.gloria-jeans-portal.com/api/systemcontrolsproperties/get/'+ (controlType?controlType:'Calendar')).get(function (response) {
+    var api = $resource(apiURLs.systemcontrolsproperties(controlType ? controlType : 'Calendar')).get(function (response) {
       fulfillForm(_data, response);
     });
   };
@@ -236,27 +250,27 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
 
     return $.post(
       apiURLs.post,
-      { data: angular.toJson(_data) }
+      {data: angular.toJson(_data)}
     )
   };
   var sendControl = function (_data, id) {
     return $.post(
       apiURLs.post,
-      { data: angular.toJson(_data) }
+      {data: angular.toJson(_data)}
     )
   };
   var sendDictionary = function (_data) {
     var form = formToObject(_data);
     return $.post(
       apiURLs.dictionaryAdd,
-      { data: angular.toJson(form) }
+      {data: angular.toJson(form)}
     )
   };
   var editDictionary = function (_data, id) {
     var form = formToObject(_data, id);
     return $.post(
       apiURLs.dictionaryEdit(id),
-      { data: angular.toJson(form) }
+      {data: angular.toJson(form)}
     )
   };
 
@@ -267,7 +281,6 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     getDictionary: getDictionary,
     addDictionary: addDictionary,
     editDictionary: editDictionary,
-    //send: send
     sendForm: sendForm,
     sendControl: sendControl,
     sendDictionary: sendDictionary,

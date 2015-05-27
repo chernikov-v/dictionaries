@@ -9,50 +9,17 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
       startWeek: 1
     });
 
-
     $routeProvider
-        .when('/main', {
-            templateUrl: 'views/main.html',
-            controller: 'MainCtrl'
-        })
-        .when('/forms/create', {
-            templateUrl: 'views/create.html',
-            controller: 'CreateCtrl'
-        })
-        .when('/forms/:id/view', {
-            templateUrl: 'views/view.html',
-            controller: 'ViewCtrl'
-        })
-        .when('/user', {
-        templateUrl: 'views/user.html',
-        controller: 'ViewUserCtrl'
-        })
-        .when('/grid', {
-        templateUrl: 'views/grid.html',
-        controller: 'ViewGridCtrl'
-        })
-        .when('/grid-scroll', {
-        templateUrl: 'views/grid-scroll.html',
-        controller: 'ViewGridCtrl'
-        })
-        .when('/list', {
-          templateUrl: 'views/list.html'
-        })
-
-      /*template*/
-      .when('/template-grid', {
-        templateUrl: 'views/template-grid.html',
-        controller: 'ViewGridTemplateCtrl'
-      })
-      .when('/template-form', {
-        template: '<form-directive-template form="form"></form-directive-template>',
-        controller: 'ViewTemplateCtrl'
-      })
 
       /*dictionary*/
       .when('/dictionary-grid', {
         templateUrl: 'views/dictionary-grid.html',
-        controller: 'ViewGridTemplateCtrl'
+        controller: function($scope, $location, $route){
+          $scope.goTo = function(_id){
+            $location.path('/user').search({id: _id});
+            $route.reload();
+          };
+        }
       })
       .when('/dictionary-form', {
         template: '<form-directive-dictionary form="form"></form-directive-dictionary>',
@@ -70,40 +37,13 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
 
           }
         }
-        //controller: 'ViewTemplateCtrl'
-        //controller: 'ViewDictionaryCtrl'
+
       })
 
       /*test grids*/
-        .when('/hierarchy', {
-          template: '<hierarchy-grid></hierarchy-grid>'
-        })
-        .when('/aggregates', {
-          template: '<aggregates-grid></aggregates-grid>'
-        })
-        .when('/frozen', {
-          template: '<frozen-grid></frozen-grid>'
-        })
-        .when('/image', {
-          template: '<image-grid></image-grid>'
-        })
-        .when('/signalr', {
-          template: '<signalr-grid></signalr-grid>'
-        })
-        .when('/multicolumn', {
-          template: '<multicolumn-grid></multicolumn-grid>'
-        })
-        .when('/batchediting', {
-          template: '<batchediting-grid></batchediting-grid>'
-        })
-        .when('/detailtemlate', {
-          template: '<detailtemlate-grid></detailtemlate-grid>'
-        })
-        .when('/toolbartemplate', {
-          template: '<toolbartemplate-grid></toolbartemplate-grid>'
-        })
+
         .otherwise({
-            redirectTo: '/grid'
+            redirectTo: '/dictionary-grid'
         });
 
 }).run(['$rootScope',  function() {}]);

@@ -1,8 +1,8 @@
 'use strict';
 
 
-angularApp.directive('gridDictionary', function ($http, $route, $location, $timeout, Api) {
-
+angularApp.directive('gridDictionary', function ($http, $route, $location, $timeout, Api, underscore) {
+  var _ = underscore;
   return {
     restrict: 'E',
     scope: {
@@ -10,30 +10,139 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
     },
     link: function ($scope, $element, $attrs, $controller) {
 
-      //$http.get("http://mvc.gloria-jeans-portal.com/api/templates/templatecontrols/b259b51b-fcda-4cdd-8542-552d8af8ba97").success(function (response) {
-      //$http.get(Api.urls.datadictionary).success(function (response) {
+      function firstToLowerCase(str) {
+        return str.substr(0, 1).toLowerCase() + str.substr(1);
+      }
 
+      $http.get(Api.urls.dataDictionaryGrid).success(function (response) {
 
-      $scope.columns = [
-        //{ title: "X", template: "<input type='checkbox' class='checkbox' />", hidden: true, width: 30},
-        { field: "controlName", title: "Control Name" },
-        { field: "controlType", title: "Control Type" }
-      ];
-        //$scope.data = response;
+        $scope.schema = {};
+        $scope.columns = [
+          //{ title: "X", template: "<input type='checkbox' class='checkbox' />", hidden: true, width: 30}
+          {
+            title: "Delete",
+            hidden: true,
+            width: 120,
+            command: [
+              {
+                name: "destroy"
+              }
+            ]
+          }
+        ];
+
+        for (var i = 0; i < response.grid.length; i++) {
+          var field = _.where(response.fields, {fieldId: response.grid[i]})[0];
+          var fieldName = firstToLowerCase(field.fieldName);
+          var fieldType = firstToLowerCase(field.dataType);
+          $scope.columns.push({
+            title: field.fieldLabel,
+            field: fieldName
+          });
+          $scope.schema[fieldName] =
+          {
+            type : fieldType
+          }
+        }
+
+        var filterParser = function (obj) {
+          var tmp = [];
+          if (typeof obj.filters == 'undefined') {
+            tmp.push(obj)
+          } else {
+            for (var j = 0; j < obj.filters.length; j++) {
+              tmp = tmp.concat(filterParser(obj.filters[j]));
+            }
+          }
+          return tmp;
+        };
+
 
         $scope.gridOptions = {
           dataSource: new kendo.data.DataSource({
             transport: {
-              read: Api.urls.datadictionary
-            }
-            //data: $scope.data,
-            //pageSize: 5
+              read: function (options) {
+                var data = options.data;
+
+                if (typeof data.filter != 'undefined') {
+                  console.log('result ', filterParser(data.filter));
+                  data.filter = filterParser(options.data.filter);
+                }
+                $.ajax({
+                  method: "POST",
+                  url: Api.urls.datadictionary,
+                  data: {
+                    data: kendo.stringify(data)
+                  },
+                  success: function (result) {
+                    result.data.total = result.total;
+                    options.success(result.data);
+                  }
+                });
+              },
+              update: Api.urls.datadictionary,
+              create: Api.urls.datadictionary,
+              destroy: function (options) {
+                console.log(options);
+                $.ajax({
+                  method: "GET",
+                  url: Api.urls.datadictionaryDelete(options.data.id),
+                  success: function (result) {
+                    options.success(result);
+                  }
+                });
+              }
+            },
+            schema: {
+              total: 'total',
+              model: {
+                id: 'id',
+                fields: $scope.schema
+              }
+            },
+            autoSync: true,
+            sync: function(e){
+              this.refresh();
+            },
+            serverPaging: true,
+            serverSorting: true,
+            serverFiltering: true,
+            pageSize: 5
           }),
+          editable: {
+            destroy: true,
+            update: false
+          },
+          remove: function (e) {
+            //e.preventDefault();
+            //console.log(this,e);
+            //$timeout(this.saveChanges(),5000);
+          },
+          autoBind: true,
           selectable: "row",
+          filterable: {
+            extra: false,
+            operators: {
+              string: {
+                contains: "Contains"
+              }
+            }
+          },
+          sortable: {
+            mode: "multiple",
+            allowUnsort: true
+          },
+          pageable: {
+            pageSize: 10,
+            buttonCount: 3,
+            //pageSizes: [10, 20, 50],
+            refresh: true,
+            //info: true
+          },
           columns: $scope.columns,
           toolbar: [
-            { name: "add_record", text: "Add New Record" },
-            //{ name: "delete_records", text: "Delete Records" }
+            {name: "add_record", text: "Add New Record"},
+            {name: "delete_records", text: "Delete Column Show"}
           ],
           change: function (e) {
             var data = this.dataItem(this.select());
@@ -44,8 +153,7 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
           }
         };
         createGrid();
-
-      //});
+      });
 
       function createGrid() {
         var grid = $("#myGrid");
@@ -64,7 +172,7 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
         $(".k-grid-add_record").click(function (e) {
           e.preventDefault();
 
-          $location.path('/dictionary-form').search({ add: true });
+          $location.path('/dictionary-form').search({add: true});
           $route.reload();
         });
       }
@@ -72,14 +180,16 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
       function deleteRecords() {
         $(".k-grid-delete_records").click(function (e) {
           e.preventDefault();
-          console.log(e.target);
-          var button = e.target;
-          $(e.target).replaceWith('<a class="k-button k-button-icontext k-grid-delete_selected" href="#"><span class="k-icon k-delete"></span>Delete Selected</a>' +
-          '<a class="k-button k-button-icontext k-grid-cancel_delete" href="#"><span class="k-icon k-cancel"></span>Delete Selected</a>');
-          //console.log($scope.grid.getOptions());
-          $scope.grid.setOptions({ selectable: false });
-          $scope.grid.showColumn(0);
-          $scope.grid.table.on('click', '.checkbox', selectRow);
+          var elem = $(this);
+          if ($scope.grid.columns[0].hidden) {
+            elem.addClass('active').text('Delete Column Hide');
+            $scope.grid.showColumn(0)
+          } else {
+            elem.removeClass('active').text('Delete Column Show');
+            $scope.grid.hideColumn(0);
+          }
+          //$scope.grid.setOptions({ selectable: false });
+          //$scope.grid.table.on('click', '.checkbox', selectRow);
           //setOptions();
           //hideColumn();
           //showColumn();
@@ -106,12 +216,12 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
         //on dataBound event restore previous selected rows:
         function onDataBound(e) {
           var view = this.dataSource.view();
-          for(var i = 0; i < view.length;i++){
-            if(checkedIds[view[i].id]){
+          for (var i = 0; i < view.length; i++) {
+            if (checkedIds[view[i].id]) {
               this.tbody.find("tr[data-uid='" + view[i].uid + "']")
                 .addClass("k-state-selected")
                 .find(".checkbox")
-                .attr("checked","checked");
+                .attr("checked", "checked");
             }
           }
         }
