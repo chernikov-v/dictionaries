@@ -189,10 +189,11 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     templateView: function (id) {
       return mainUrl + 'template/view/' + id
     },
-    dataDictionaryGrid: formUrl+'get/DataDictionaryGrid',
-    datadictionaryDelete: function(id){
-    return mainUrl + 'datadictionary/delete/' + id;
-  }
+    dataDictionaryGrid: formUrl + 'get/DataDictionaryGrid',
+    datadictionaryDelete: function (id) {
+      return mainUrl + 'datadictionary/delete/' + id;
+    },
+    systemcontrolsproperties: mainUrl + 'systemcontrolsproperties/'
 
   };
   /*===========================================================================================================================================*/
