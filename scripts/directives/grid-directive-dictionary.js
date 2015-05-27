@@ -80,8 +80,6 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
                   }
                 });
               },
-              update: Api.urls.datadictionary,
-              create: Api.urls.datadictionary,
               destroy: function (options) {
                 console.log(options);
                 $.ajax({
