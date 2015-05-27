@@ -1,6 +1,6 @@
 'use strict';
 
-angularApp.directive('formDirectiveDictionary', function (Api, $rootScope, $location, $timeout, $routeParams) {
+angularApp.directive('formDirectiveDictionary', function (Api, $rootScope, $location, $timeout, $routeParams, $route) {
   return {
     controller: function($scope){
       $scope.submit = function(){
@@ -8,11 +8,15 @@ angularApp.directive('formDirectiveDictionary', function (Api, $rootScope, $loca
         console.log('route params - ', $routeParams);
 
         if($routeParams.id){
-          Api.editDictionary($scope.form, $routeParams.id);
+          Api.editDictionary($scope.form, $routeParams.id).success(backToGrid);
         }else if($routeParams.add){
-          Api.sendDictionary($scope.form);
+          Api.sendDictionary($scope.form).success(backToGrid);
         }
-        $location.path('/dictionary-grid').search({});
+       function backToGrid(response){
+         console.log('asdasd');
+         $location.path('/dictionary-grid').search({});
+         $route.reload();
+       }
       };
 
       $scope.cancel = function(){
