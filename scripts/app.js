@@ -22,10 +22,12 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
         }
       })
       .when('/dictionary-form', {
-        template: '<form-directive-dictionary form="form"></form-directive-dictionary>',
-        controller: function($rootScope, $routeParams,$scope, Api){
-          $scope.form = {};
-          $rootScope.hideForm = true;
+        template: '<form-directive-dictionary></form-directive-dictionary>',
+        controller: function($rootScope, $routeParams,$scope, $http, Api){
+          //$scope.form = {};
+
+
+          /*$rootScope.hideForm = true;
 
           if($routeParams.id){
             console.log($routeParams);
@@ -35,7 +37,7 @@ var angularApp = angular.module('angularjsFormBuilderApp', ['kendo.directives','
             console.log($routeParams);
             Api.addDictionary($scope.form);
 
-          }
+          }*/
         }
 
       })
