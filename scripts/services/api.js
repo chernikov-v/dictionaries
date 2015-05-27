@@ -193,7 +193,7 @@ angularApp.factory('Api', function ($resource, $http, $q, underscore) {
     datadictionaryDelete: function (id) {
       return mainUrl + 'datadictionary/delete/' + id;
     },
-    systemcontrolsproperties: mainUrl + 'systemcontrolsproperties/'
+    systemcontrols: mainUrl + 'systemcontrolsproperties/'
 
   };
   /*===========================================================================================================================================*/
