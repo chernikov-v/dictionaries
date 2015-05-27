@@ -31,14 +31,21 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
           }
         ];
 
-      console.log(Api.urls.systemcontrolsproperties);
+
       for (var i = 0; i < response.grid.length; i++) {
         var field = _.where(response.fields, {fieldId: response.grid[i]})[0];
         var fieldName = firstToLowerCase(field.fieldName);
         var fieldType = firstToLowerCase(field.dataType);
         $scope.columns.push({
           title: field.fieldLabel,
-          field: fieldName
+          field: fieldName,
+          filterable: {
+            cell:{
+              dataSource: 'http://asdasd.asdasd.ru',
+            operator: 'contains',
+            showOperators: false
+            }
+          }
         });
         $scope.schema[fieldName] =
         {
@@ -121,6 +128,7 @@ angularApp.directive('gridDictionary', function ($http, $route, $location, $time
         autoBind: true,
         selectable: "row",
         filterable: {
+          mode: 'row',
           extra: false,
           operators: {
             string: {
